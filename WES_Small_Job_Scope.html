@@ -365,6 +365,7 @@
                 color-adjust: exact !important;
             }
 
+            /* Force textarea expansion in print */
             textarea, .notes-area, .expanding-field {
                 height: auto !important;
                 min-height: auto !important;
@@ -375,16 +376,31 @@
                 word-wrap: break-word !important;
                 border: 1px solid #000 !important;
                 padding: 8px !important;
-                margin: 0 !important;
+                background: white !important;
+                -webkit-print-color-adjust: exact !important;
+                color-adjust: exact !important;
+                box-sizing: border-box !important;
             }
             
-            /* Force page breaks before large text sections */
+            /* Force sections with large text areas to start on new page */
             .textarea-page-break {
                 page-break-before: always !important;
+                margin-top: 0 !important;
+            }
+
+            /* Keep small sections together */
+            .keep-together {
+                page-break-inside: avoid !important;
             }
             
-            /* Prevent sections from breaking if they're small enough */
-            .section.keep-together {
+             /* Ensure sections don't break awkwardly */
+            .section {
+                orphans: 3;
+                widows: 3;
+            }
+            
+            /* Force page break before large content blocks */
+            .section:has(textarea[style*="height"]) {
                 page-break-inside: avoid !important;
             }
         }
@@ -974,44 +990,39 @@
         }
 
         function preprocessTextAreasForPrint() {
-            const textareas = document.querySelectorAll('textarea, .notes-area, .expanding-field');
+                const textareas = document.querySelectorAll('textarea, .notes-area, .expanding-field');
             
             textareas.forEach(textarea => {
-                // Create a temporary div to measure text height
-                const tempDiv = document.createElement('div');
-                tempDiv.style.position = 'absolute';
-                tempDiv.style.visibility = 'hidden';
-                tempDiv.style.width = textarea.offsetWidth + 'px';
-                tempDiv.style.fontSize = '12px';
-                tempDiv.style.fontFamily = 'Times New Roman, serif';
-                tempDiv.style.lineHeight = '1.4';
-                tempDiv.style.padding = '8px';
-                tempDiv.style.border = '1px solid #000';
-                tempDiv.style.whiteSpace = 'pre-wrap';
-                tempDiv.style.wordWrap = 'break-word';
-                tempDiv.innerHTML = textarea.value.replace(/\n/g, '<br>');
-                
-                document.body.appendChild(tempDiv);
-                const textHeight = tempDiv.offsetHeight;
-                document.body.removeChild(tempDiv);
-                
-                // If text is very tall (roughly more than half a page), add page break before
-                if (textHeight > 400) {
-                    const section = textarea.closest('.section');
-                    if (section) {
-                        section.classList.add('textarea-page-break');
-                    }
-                } else {
-                    // If text is small, try to keep the section together
-                    const section = textarea.closest('.section');
-                    if (section && textHeight < 200) {
-                        section.classList.add('keep-together');
-                    }
+                if (!textarea.value.trim()) {
+                    // Set minimum height for empty textareas
+                    textarea.style.height = '80px';
+                    textarea.style.minHeight = '80px';
+                    return;
                 }
                 
-                // Set the textarea to the calculated height
-                textarea.style.height = textHeight + 'px';
-                textarea.style.minHeight = textHeight + 'px';
+                // Reset height to get accurate scrollHeight
+                textarea.style.height = 'auto';
+                textarea.style.minHeight = 'auto';
+                
+                // Get the actual scroll height needed for content
+                const scrollHeight = textarea.scrollHeight;
+                const padding = 16; // 8px top + 8px bottom padding
+                const border = 2; // 1px top + 1px bottom border
+                const requiredHeight = scrollHeight + padding + border;
+                
+                // Set the textarea to show all content
+                textarea.style.height = Math.max(requiredHeight, 80) + 'px';
+                textarea.style.minHeight = Math.max(requiredHeight, 80) + 'px';
+                textarea.style.maxHeight = 'none';
+                textarea.style.overflow = 'visible';
+                textarea.style.resize = 'none';
+                
+                // Handle page breaks for large content
+                const section = textarea.closest('.section');
+                if (section && requiredHeight > 300) {
+                    section.style.pageBreakBefore = 'always';
+                    section.classList.add('textarea-page-break');
+                }
             });
         }
 
@@ -1020,12 +1031,17 @@
             const sections = document.querySelectorAll('.section');
             sections.forEach(section => {
                 section.classList.remove('textarea-page-break', 'keep-together');
+                section.style.pageBreakBefore = '';
+                section.style.pageBreakInside = '';
             });
             
             const textareas = document.querySelectorAll('textarea, .notes-area, .expanding-field');
             textareas.forEach(textarea => {
                 textarea.style.height = '';
                 textarea.style.minHeight = '';
+                textarea.style.maxHeight = '';
+                textarea.style.overflow = '';
+                textarea.style.resize = '';
             });
         }
 
