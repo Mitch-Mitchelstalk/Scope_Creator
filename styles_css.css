@@ -1,178 +1,122 @@
-/* Reset and Base Styles */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
 body {
     font-family: 'Times New Roman', serif;
-    background: #ffffff;
-    color: #000000;
+    margin: 20px;
+    background: white;
+    color: #000;
     line-height: 1.4;
-    padding: 20px;
 }
-
 .container {
-    max-width: 900px;
+    max-width: 800px;
     margin: 0 auto;
-    background: #ffffff;
+    background: white;
     padding: 20px;
 }
-
-/* Header */
 .header {
     text-align: center;
     margin-bottom: 30px;
-    border-bottom: 2px solid #000000;
+    border-bottom: 2px solid #000;
     padding-bottom: 15px;
 }
-
 .header h1 {
-    font-size: 1.75rem;
+    font-size: 24px;
     font-weight: bold;
     margin: 0;
     text-decoration: underline;
 }
-
-.header p {
-    margin: 5px 0 0 0;
-    font-style: italic;
-    font-size: 1rem;
-}
-
-/* Save/Load Section */
 .save-load-section {
     margin-bottom: 20px;
     padding: 15px;
-    border: 2px solid #000000;
+    border: 2px solid #000;
     background: #f9f9f9;
     text-align: center;
 }
-
 .save-load-section h3 {
-    margin: 0 0 15px 0;
-    font-size: 0.9rem;
+    margin: 0 0 10px 0;
+    font-size: 14px;
     text-transform: uppercase;
-    font-weight: bold;
 }
-
-.button-group {
-    margin-bottom: 10px;
-}
-
-.help-text {
-    margin: 0;
-    font-size: 0.75rem;
-    color: #666666;
-}
-
-#fileInput {
-    display: none;
-}
-
-/* Job Name Section */
-.job-name {
-    border: 2px solid #000000;
-    padding: 15px;
-    margin-bottom: 20px;
-    background: #f9f9f9;
-}
-
-.job-name label {
-    font-weight: bold;
-    font-size: 1rem;
-    display: block;
-    margin-bottom: 8px;
-}
-
-/* Sections */
 .section {
     margin-bottom: 25px;
     page-break-inside: avoid;
 }
-
 .section-header {
     font-weight: bold;
-    font-size: 1rem;
+    font-size: 14px;
     text-decoration: underline;
     margin-bottom: 10px;
     text-transform: uppercase;
 }
-
 .section-content {
     margin-left: 10px;
 }
-
-/* Form Elements */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+    font-size: 12px;
+}
+th, td {
+    border: 1px solid #000;
+    padding: 6px;
+    text-align: left;
+    vertical-align: middle;
+    min-height: 28px;
+    height: 28px;
+}
+th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+}
 .input-field {
     width: 100%;
-    padding: 8px;
+    padding: 4px;
     border: none;
-    border-bottom: 1px solid #000000;
+    border-bottom: 1px solid #000;
     background: transparent;
-    font-size: 0.9rem;
+    font-size: 12px;
     font-family: inherit;
-    transition: background-color 0.2s ease;
 }
-
 .input-field:focus {
     outline: none;
     background: #f9f9f9;
 }
 
+/* Style for readonly/calculated fields */
 .readonly-field {
     width: 100%;
-    padding: 8px;
+    padding: 4px;
     border: none;
     background: transparent !important;
-    font-size: 0.9rem;
+    font-size: 12px;
     font-family: inherit;
     pointer-events: none;
-    color: #000000;
+    -moz-appearance: textfield; /* Firefox */
 }
 
+/* Remove number input arrows */
 .readonly-field::-webkit-outer-spin-button,
 .readonly-field::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
 
-.readonly-field {
-    -moz-appearance: textfield;
+/* Remove underlines only for table inputs */
+table .input-field {
+    border-bottom: none;
 }
-
-.notes-area {
-    width: 100%;
-    min-height: 100px;
-    padding: 12px;
-    border: 1px solid #000000;
-    background: transparent;
-    resize: vertical;
-    font-family: inherit;
-    font-size: 0.9rem;
-    transition: background-color 0.2s ease;
-}
-
-.notes-area:focus {
-    outline: none;
-    background: #f9f9f9;
-}
-
 .expanding-field {
     width: 100%;
-    padding: 4px;
+    padding: 2px;
     border: none;
     background: transparent;
-    font-size: 0.85rem;
+    font-size: 12px;
     font-family: inherit;
     resize: none;
     overflow: hidden;
-    min-height: 20px;
+    min-height: 18px;
+    height: 18px;
     line-height: 1.2;
-    transition: background-color 0.2s ease;
 }
-
 .expanding-field:focus {
     outline: none;
     background: #f9f9f9;
@@ -181,20 +125,15 @@ body {
 .checkbox-field {
     margin: 0;
     transform: scale(1.2);
-    accent-color: #000000;
-    cursor: pointer;
+    accent-color: #000;
 }
 
-/* Form Layout */
-.field-group {
-    margin-bottom: 15px;
-}
-
-.field-group label {
+/* Print-friendly checkbox - alternative approach */
+.checkbox-field:checked::after {
+    content: "✓";
+    position: absolute;
     font-weight: bold;
-    display: block;
-    margin-bottom: 5px;
-    font-size: 0.85rem;
+    color: #000;
 }
 
 .two-column {
@@ -203,292 +142,163 @@ body {
     gap: 15px;
     margin-bottom: 15px;
 }
-
 .three-column {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 10px;
     margin-bottom: 15px;
 }
-
-/* Tables */
-.table-container {
-    overflow-x: auto;
-    margin-bottom: 15px;
+.full-width {
+    grid-column: 1 / -1;
 }
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.8rem;
-    background: #ffffff;
-}
-
-th,
-td {
-    border: 1px solid #000000;
-    padding: 8px;
-    text-align: left;
-    vertical-align: middle;
-    min-height: 40px;
-}
-
-th {
-    background-color: #f0f0f0;
-    font-weight: bold;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-}
-
-/* Remove underlines for table inputs */
-table .input-field {
-    border-bottom: none;
-    padding: 4px;
-    font-size: 0.8rem;
-}
-
-/* Checkbox columns */
-td:nth-child(4),
-td:nth-child(5) {
-    text-align: center;
-    width: 60px;
-}
-
-/* Table column widths */
-#itemsTable th:nth-child(1),
-#provisionalsTable th:nth-child(1),
-#optionalTable th:nth-child(1) {
-    width: 35%;
-}
-
-#itemsTable th:nth-child(2),
-#provisionalsTable th:nth-child(2),
-#optionalTable th:nth-child(2) {
-    width: 10%;
-}
-
-#itemsTable th:nth-child(3),
-#provisionalsTable th:nth-child(3),
-#optionalTable th:nth-child(3) {
-    width: 15%;
-}
-
-#itemsTable th:nth-child(6),
-#provisionalsTable th:nth-child(6),
-#optionalTable th:nth-child(6) {
-    width: 20%;
-}
-
-#labourTable th:nth-child(1) {
-    width: 30%;
-}
-
-#labourTable th:nth-child(2) {
-    width: 15%;
-}
-
-#labourTable th:nth-child(3) {
-    width: 10%;
-}
-
-#labourTable th:nth-child(4) {
-    width: 45%;
-}
-
-/* Buttons */
 .add-button {
-    background: #000000;
-    color: #ffffff;
+    background: #000;
+    color: white;
     border: none;
-    padding: 8px 16px;
+    padding: 6px 12px;
     cursor: pointer;
-    font-size: 0.8rem;
-    margin-top: 10px;
-    transition: background-color 0.2s ease;
+    font-size: 12px;
+    margin-top: 8px;
 }
-
 .add-button:hover {
-    background: #333333;
+    background: #333;
 }
-
+.total-section {
+    border: 2px solid #000;
+    padding: 15px;
+    margin-top: 20px;
+    background: #f9f9f9;
+}
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 8px 0;
+    font-size: 14px;
+}
+.final-total {
+    font-size: 16px;
+    font-weight: bold;
+    border-top: 2px solid #000;
+    padding-top: 10px;
+    margin-top: 10px;
+}
+.notes-area {
+    width: 100%;
+    min-height: 80px;
+    padding: 8px;
+    border: 1px solid #000;
+    background: transparent;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 12px;
+}
+.notes-area:focus {
+    outline: none;
+    background: #f9f9f9;
+}
 .action-button {
-    background: #000000;
-    color: #ffffff;
-    padding: 12px 24px;
+    background: #000;
+    color: white;
+    padding: 10px 20px;
     border: none;
     cursor: pointer;
-    font-size: 1rem;
+    font-size: 14px;
     margin: 15px 10px 20px 0;
-    transition: background-color 0.2s ease;
 }
-
 .action-button:hover {
-    background: #333333;
+    background: #333;
 }
-
 .action-button.secondary {
-    background: #666666;
+    background: #666;
 }
-
 .action-button.secondary:hover {
-    background: #888888;
+    background: #888;
 }
-
-.action-buttons {
-    text-align: center;
-    margin-top: 30px;
+.job-name {
+    border: 2px solid #000;
+    padding: 15px;
+    margin-bottom: 20px;
+    background: #f9f9f9;
 }
-
-/* Totals */
+.job-name label {
+    font-weight: bold;
+    font-size: 14px;
+}
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    font-size: 12px;
+    height: 100%;
+}
+.field-group {
+    margin-bottom: 12px;
+}
+.field-group label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 3px;
+    font-size: 12px;
+}
 .subtotal-line {
     text-align: right;
     font-weight: bold;
     margin-top: 10px;
-    padding-top: 8px;
-    border-top: 1px solid #000000;
-    font-size: 0.9rem;
+    padding-top: 5px;
+    border-top: 1px solid #000;
 }
 
-.labour-totals .subtotal-line {
-    margin-top: 5px;
-    font-size: 0.85rem;
+#fileInput {
+    display: none;
 }
 
-.total-section {
-    border: 2px solid #000000;
-    padding: 20px;
-    margin: 20px 0;
-    background: #f9f9f9;
-    page-break-inside: avoid;
-}
-
-.total-section h3 {
-    margin: 0 0 15px 0;
-    font-size: 1rem;
-    text-transform: uppercase;
-    font-weight: bold;
-}
-
-.total-row {
-    display: flex;
-    justify-content: space-between;
-    margin: 10px 0;
-    font-size: 1rem;
-}
-
-.final-total {
-    font-size: 1.1rem;
-    font-weight: bold;
-    border-top: 2px solid #000000;
-    padding-top: 15px;
-    margin-top: 15px;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    body {
-        padding: 10px;
-    }
-    
-    .container {
-        padding: 15px;
-    }
-    
-    .two-column,
-    .three-column {
-        grid-template-columns: 1fr;
-        gap: 10px;
-    }
-    
-    .table-container {
-        overflow-x: scroll;
-    }
-    
-    table {
-        min-width: 600px;
-    }
-    
-    .action-button {
-        width: 100%;
-        margin: 10px 0;
-    }
-}
-
-/* Print Styles */
 @media print {
-    body {
-        background: #ffffff !important;
+    body { 
+        background: white !important;
         font-size: 11px;
-        padding: 0;
     }
-    
-    .container {
+    .action-button, .add-button, .save-load-section { 
+        display: none !important; 
+    }
+    .container { 
         margin: 0;
         padding: 10px;
-        max-width: none;
     }
-    
-    .action-button,
-    .add-button,
-    .save-load-section {
-        display: none !important;
-    }
-    
     .section {
         page-break-inside: avoid;
-        margin-bottom: 20px;
+    }
+    .input-field {
+        background: transparent !important;
     }
     
+    table .input-field {
+        border: none !important;
+    }
+    table {
+        font-size: 10px;
+    }
     .total-section {
         page-break-inside: avoid;
     }
     
-    .header h1 {
-        font-size: 1.5rem;
-    }
-    
-    .section-header {
-        font-size: 0.9rem;
-    }
-    
-    table {
-        font-size: 9px;
-    }
-    
-    th {
-        background-color: #f0f0f0 !important;
+    /* Force checkbox visibility in print - more aggressive approach */
+    .checkbox-field {
+        -webkit-appearance: none !important;
+        appearance: none !important;
+        width: 18px !important;
+        height: 18px !important;
+        border: 2px solid #000 !important;
+        background: white !important;
+        position: relative !important;
+        transform: none !important;
+        margin: 0 !important;
         -webkit-print-color-adjust: exact !important;
         color-adjust: exact !important;
     }
     
-    .input-field,
-    .readonly-field {
-        background: transparent !important;
-        border-bottom: none !important;
-        font-size: 10px;
-    }
-    
-    /* Restore underlines for form sections */
-    .section:nth-child(3) .input-field,
-    .section:nth-child(4) .input-field,
-    .section:nth-child(5) .input-field {
-        border-bottom: 1px solid #000000 !important;
-    }
-    
-    .checkbox-field {
-        -webkit-appearance: none !important;
-        appearance: none !important;
-        width: 16px !important;
-        height: 16px !important;
-        border: 2px solid #000000 !important;
-        background: #ffffff !important;
-        position: relative !important;
-        transform: none !important;
-        margin: 0 !important;
-    }
-    
     .checkbox-field:checked {
-        background: #000000 !important;
+        background: #000 !important;
         -webkit-print-color-adjust: exact !important;
         color-adjust: exact !important;
     }
@@ -498,27 +308,92 @@ td:nth-child(5) {
         position: absolute !important;
         top: -2px !important;
         left: 2px !important;
-        color: #ffffff !important;
-        font-size: 12px !important;
+        color: white !important;
+        font-size: 14px !important;
         font-weight: bold !important;
+        -webkit-print-color-adjust: exact !important;
+        color-adjust: exact !important;
     }
     
-    .notes-area,
-    .expanding-field,
-    textarea {
+    .input-field {
+        background: transparent !important;
+    }
+    
+    /* Ensure readonly fields remain clean in print */
+    .readonly-field {
+        background: transparent !important;
+        border: none !important;
+        -webkit-appearance: none !important;
+        -moz-appearance: textfield !important;
+        pointer-events: none !important;
+    }
+    
+    .readonly-field::-webkit-outer-spin-button,
+    .readonly-field::-webkit-inner-spin-button {
+        -webkit-appearance: none !important;
+        margin: 0 !important;
+    }
+    
+    /* Keep underlines only for specific sections in print */
+    .section-content .input-field {
+        border-bottom: none !important;
+    }
+    
+    /* Add underlines back for client and site details sections */
+    .section:nth-child(3) .section-content .input-field,
+    .section:nth-child(4) .section-content .input-field,
+    .section:nth-child(5) .section-content .input-field {
+        border-bottom: 1px solid #000 !important;
+    }
+    
+    /* Remove underlines for table inputs in print */
+    table .input-field {
+        border: none !important;
+    }
+    
+    /* Ensure table headers remain grey in print */
+    th {
+        background-color: #f0f0f0 !important;
+        -webkit-print-color-adjust: exact !important;
+        color-adjust: exact !important;
+    }
+
+    /* Force textarea expansion in print */
+    textarea, .notes-area, .expanding-field {
         height: auto !important;
-        min-height: 80px !important;
+        min-height: auto !important;
         max-height: none !important;
         overflow: visible !important;
         resize: none !important;
         white-space: pre-wrap !important;
         word-wrap: break-word !important;
-        border: 1px solid #000000 !important;
+        border: 1px solid #000 !important;
         padding: 8px !important;
-        background: #ffffff !important;
+        background: white !important;
+        -webkit-print-color-adjust: exact !important;
+        color-adjust: exact !important;
+        box-sizing: border-box !important;
     }
     
-    .section:has(.notes-area) {
+    /* Force sections with large text areas to start on new page */
+    .textarea-page-break {
+        page-break-before: always !important;
+        margin-top: 0 !important;
+    }
+
+    /* Keep small sections together */
+    .keep-together {
+        page-break-inside: avoid !important;
+    }
+    
+     /* Ensure sections don't break awkwardly */
+    .section {
+        orphans: 3;
+        widows: 3;
+    }
+    
+    /* Force page break before large content blocks */
+    .section:has(textarea[style*="height"]) {
         page-break-inside: avoid !important;
     }
 }
