@@ -364,6 +364,29 @@
                 -webkit-print-color-adjust: exact !important;
                 color-adjust: exact !important;
             }
+
+            textarea, .notes-area, .expanding-field {
+                height: auto !important;
+                min-height: auto !important;
+                max-height: none !important;
+                overflow: visible !important;
+                resize: none !important;
+                white-space: pre-wrap !important;
+                word-wrap: break-word !important;
+                border: 1px solid #000 !important;
+                padding: 8px !important;
+                margin: 0 !important;
+            }
+            
+            /* Force page breaks before large text sections */
+            .textarea-page-break {
+                page-break-before: always !important;
+            }
+            
+            /* Prevent sections from breaking if they're small enough */
+            .section.keep-together {
+                page-break-inside: avoid !important;
+            }
         }
     </style>
 </head>
@@ -916,6 +939,9 @@
             // Update page title for PDF filename
             updatePageTitle();
             
+            // Pre-process text areas for printing
+            preprocessTextAreasForPrint();
+            
             // Auto-save JSON file before printing
             setTimeout(() => {
                 try {
@@ -938,8 +964,69 @@
                 // Print after auto-save attempt
                 setTimeout(() => {
                     window.print();
+                    
+                    // Clean up after printing
+                    setTimeout(() => {
+                        cleanupAfterPrint();
+                    }, 1000);
                 }, 100);
             }, 100);
+        }
+
+        function preprocessTextAreasForPrint() {
+            const textareas = document.querySelectorAll('textarea, .notes-area, .expanding-field');
+            
+            textareas.forEach(textarea => {
+                // Create a temporary div to measure text height
+                const tempDiv = document.createElement('div');
+                tempDiv.style.position = 'absolute';
+                tempDiv.style.visibility = 'hidden';
+                tempDiv.style.width = textarea.offsetWidth + 'px';
+                tempDiv.style.fontSize = '12px';
+                tempDiv.style.fontFamily = 'Times New Roman, serif';
+                tempDiv.style.lineHeight = '1.4';
+                tempDiv.style.padding = '8px';
+                tempDiv.style.border = '1px solid #000';
+                tempDiv.style.whiteSpace = 'pre-wrap';
+                tempDiv.style.wordWrap = 'break-word';
+                tempDiv.innerHTML = textarea.value.replace(/\n/g, '<br>');
+                
+                document.body.appendChild(tempDiv);
+                const textHeight = tempDiv.offsetHeight;
+                document.body.removeChild(tempDiv);
+                
+                // If text is very tall (roughly more than half a page), add page break before
+                if (textHeight > 400) {
+                    const section = textarea.closest('.section');
+                    if (section) {
+                        section.classList.add('textarea-page-break');
+                    }
+                } else {
+                    // If text is small, try to keep the section together
+                    const section = textarea.closest('.section');
+                    if (section && textHeight < 200) {
+                        section.classList.add('keep-together');
+                    }
+                }
+                
+                // Set the textarea to the calculated height
+                textarea.style.height = textHeight + 'px';
+                textarea.style.minHeight = textHeight + 'px';
+            });
+        }
+
+        function cleanupAfterPrint() {
+            // Remove the print-specific classes and styles
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.classList.remove('textarea-page-break', 'keep-together');
+            });
+            
+            const textareas = document.querySelectorAll('textarea, .notes-area, .expanding-field');
+            textareas.forEach(textarea => {
+                textarea.style.height = '';
+                textarea.style.minHeight = '';
+            });
         }
 
         function saveQuoteToFile() {
