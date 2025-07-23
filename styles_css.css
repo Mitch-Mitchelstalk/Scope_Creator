@@ -1,0 +1,524 @@
+/* Reset and Base Styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Times New Roman', serif;
+    background: #ffffff;
+    color: #000000;
+    line-height: 1.4;
+    padding: 20px;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #ffffff;
+    padding: 20px;
+}
+
+/* Header */
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #000000;
+    padding-bottom: 15px;
+}
+
+.header h1 {
+    font-size: 1.75rem;
+    font-weight: bold;
+    margin: 0;
+    text-decoration: underline;
+}
+
+.header p {
+    margin: 5px 0 0 0;
+    font-style: italic;
+    font-size: 1rem;
+}
+
+/* Save/Load Section */
+.save-load-section {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 2px solid #000000;
+    background: #f9f9f9;
+    text-align: center;
+}
+
+.save-load-section h3 {
+    margin: 0 0 15px 0;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.button-group {
+    margin-bottom: 10px;
+}
+
+.help-text {
+    margin: 0;
+    font-size: 0.75rem;
+    color: #666666;
+}
+
+#fileInput {
+    display: none;
+}
+
+/* Job Name Section */
+.job-name {
+    border: 2px solid #000000;
+    padding: 15px;
+    margin-bottom: 20px;
+    background: #f9f9f9;
+}
+
+.job-name label {
+    font-weight: bold;
+    font-size: 1rem;
+    display: block;
+    margin-bottom: 8px;
+}
+
+/* Sections */
+.section {
+    margin-bottom: 25px;
+    page-break-inside: avoid;
+}
+
+.section-header {
+    font-weight: bold;
+    font-size: 1rem;
+    text-decoration: underline;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.section-content {
+    margin-left: 10px;
+}
+
+/* Form Elements */
+.input-field {
+    width: 100%;
+    padding: 8px;
+    border: none;
+    border-bottom: 1px solid #000000;
+    background: transparent;
+    font-size: 0.9rem;
+    font-family: inherit;
+    transition: background-color 0.2s ease;
+}
+
+.input-field:focus {
+    outline: none;
+    background: #f9f9f9;
+}
+
+.readonly-field {
+    width: 100%;
+    padding: 8px;
+    border: none;
+    background: transparent !important;
+    font-size: 0.9rem;
+    font-family: inherit;
+    pointer-events: none;
+    color: #000000;
+}
+
+.readonly-field::-webkit-outer-spin-button,
+.readonly-field::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.readonly-field {
+    -moz-appearance: textfield;
+}
+
+.notes-area {
+    width: 100%;
+    min-height: 100px;
+    padding: 12px;
+    border: 1px solid #000000;
+    background: transparent;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease;
+}
+
+.notes-area:focus {
+    outline: none;
+    background: #f9f9f9;
+}
+
+.expanding-field {
+    width: 100%;
+    padding: 4px;
+    border: none;
+    background: transparent;
+    font-size: 0.85rem;
+    font-family: inherit;
+    resize: none;
+    overflow: hidden;
+    min-height: 20px;
+    line-height: 1.2;
+    transition: background-color 0.2s ease;
+}
+
+.expanding-field:focus {
+    outline: none;
+    background: #f9f9f9;
+}
+
+.checkbox-field {
+    margin: 0;
+    transform: scale(1.2);
+    accent-color: #000000;
+    cursor: pointer;
+}
+
+/* Form Layout */
+.field-group {
+    margin-bottom: 15px;
+}
+
+.field-group label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+    font-size: 0.85rem;
+}
+
+.two-column {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.three-column {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+/* Tables */
+.table-container {
+    overflow-x: auto;
+    margin-bottom: 15px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+    background: #ffffff;
+}
+
+th,
+td {
+    border: 1px solid #000000;
+    padding: 8px;
+    text-align: left;
+    vertical-align: middle;
+    min-height: 40px;
+}
+
+th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+}
+
+/* Remove underlines for table inputs */
+table .input-field {
+    border-bottom: none;
+    padding: 4px;
+    font-size: 0.8rem;
+}
+
+/* Checkbox columns */
+td:nth-child(4),
+td:nth-child(5) {
+    text-align: center;
+    width: 60px;
+}
+
+/* Table column widths */
+#itemsTable th:nth-child(1),
+#provisionalsTable th:nth-child(1),
+#optionalTable th:nth-child(1) {
+    width: 35%;
+}
+
+#itemsTable th:nth-child(2),
+#provisionalsTable th:nth-child(2),
+#optionalTable th:nth-child(2) {
+    width: 10%;
+}
+
+#itemsTable th:nth-child(3),
+#provisionalsTable th:nth-child(3),
+#optionalTable th:nth-child(3) {
+    width: 15%;
+}
+
+#itemsTable th:nth-child(6),
+#provisionalsTable th:nth-child(6),
+#optionalTable th:nth-child(6) {
+    width: 20%;
+}
+
+#labourTable th:nth-child(1) {
+    width: 30%;
+}
+
+#labourTable th:nth-child(2) {
+    width: 15%;
+}
+
+#labourTable th:nth-child(3) {
+    width: 10%;
+}
+
+#labourTable th:nth-child(4) {
+    width: 45%;
+}
+
+/* Buttons */
+.add-button {
+    background: #000000;
+    color: #ffffff;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    margin-top: 10px;
+    transition: background-color 0.2s ease;
+}
+
+.add-button:hover {
+    background: #333333;
+}
+
+.action-button {
+    background: #000000;
+    color: #ffffff;
+    padding: 12px 24px;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    margin: 15px 10px 20px 0;
+    transition: background-color 0.2s ease;
+}
+
+.action-button:hover {
+    background: #333333;
+}
+
+.action-button.secondary {
+    background: #666666;
+}
+
+.action-button.secondary:hover {
+    background: #888888;
+}
+
+.action-buttons {
+    text-align: center;
+    margin-top: 30px;
+}
+
+/* Totals */
+.subtotal-line {
+    text-align: right;
+    font-weight: bold;
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid #000000;
+    font-size: 0.9rem;
+}
+
+.labour-totals .subtotal-line {
+    margin-top: 5px;
+    font-size: 0.85rem;
+}
+
+.total-section {
+    border: 2px solid #000000;
+    padding: 20px;
+    margin: 20px 0;
+    background: #f9f9f9;
+    page-break-inside: avoid;
+}
+
+.total-section h3 {
+    margin: 0 0 15px 0;
+    font-size: 1rem;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+    font-size: 1rem;
+}
+
+.final-total {
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-top: 2px solid #000000;
+    padding-top: 15px;
+    margin-top: 15px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    
+    .container {
+        padding: 15px;
+    }
+    
+    .two-column,
+    .three-column {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .table-container {
+        overflow-x: scroll;
+    }
+    
+    table {
+        min-width: 600px;
+    }
+    
+    .action-button {
+        width: 100%;
+        margin: 10px 0;
+    }
+}
+
+/* Print Styles */
+@media print {
+    body {
+        background: #ffffff !important;
+        font-size: 11px;
+        padding: 0;
+    }
+    
+    .container {
+        margin: 0;
+        padding: 10px;
+        max-width: none;
+    }
+    
+    .action-button,
+    .add-button,
+    .save-load-section {
+        display: none !important;
+    }
+    
+    .section {
+        page-break-inside: avoid;
+        margin-bottom: 20px;
+    }
+    
+    .total-section {
+        page-break-inside: avoid;
+    }
+    
+    .header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .section-header {
+        font-size: 0.9rem;
+    }
+    
+    table {
+        font-size: 9px;
+    }
+    
+    th {
+        background-color: #f0f0f0 !important;
+        -webkit-print-color-adjust: exact !important;
+        color-adjust: exact !important;
+    }
+    
+    .input-field,
+    .readonly-field {
+        background: transparent !important;
+        border-bottom: none !important;
+        font-size: 10px;
+    }
+    
+    /* Restore underlines for form sections */
+    .section:nth-child(3) .input-field,
+    .section:nth-child(4) .input-field,
+    .section:nth-child(5) .input-field {
+        border-bottom: 1px solid #000000 !important;
+    }
+    
+    .checkbox-field {
+        -webkit-appearance: none !important;
+        appearance: none !important;
+        width: 16px !important;
+        height: 16px !important;
+        border: 2px solid #000000 !important;
+        background: #ffffff !important;
+        position: relative !important;
+        transform: none !important;
+        margin: 0 !important;
+    }
+    
+    .checkbox-field:checked {
+        background: #000000 !important;
+        -webkit-print-color-adjust: exact !important;
+        color-adjust: exact !important;
+    }
+    
+    .checkbox-field:checked::after {
+        content: "✓" !important;
+        position: absolute !important;
+        top: -2px !important;
+        left: 2px !important;
+        color: #ffffff !important;
+        font-size: 12px !important;
+        font-weight: bold !important;
+    }
+    
+    .notes-area,
+    .expanding-field,
+    textarea {
+        height: auto !important;
+        min-height: 80px !important;
+        max-height: none !important;
+        overflow: visible !important;
+        resize: none !important;
+        white-space: pre-wrap !important;
+        word-wrap: break-word !important;
+        border: 1px solid #000000 !important;
+        padding: 8px !important;
+        background: #ffffff !important;
+    }
+    
+    .section:has(.notes-area) {
+        page-break-inside: avoid !important;
+    }
+}

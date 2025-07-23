@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">Electrical Works Quote Template</title>
+    <meta name="description" content="Professional electrical works quote template for CINC Whelan Electrical">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>CINC Whelan Electrical</h1>
+            <p>Small Job Scope</p>
+        </header>
+
+        <!-- Save/Load Section -->
+        <section class="save-load-section">
+            <h3>Save & Load Quote</h3>
+            <div class="button-group">
+                <button class="action-button secondary" onclick="saveQuote()">Save Quote</button>
+                <button class="action-button secondary" onclick="document.getElementById('fileInput').click()">Load Quote</button>
+                <input type="file" id="fileInput" accept=".json" onchange="loadQuote(event)">
+            </div>
+            <p class="help-text">Save your quote as a JSON file to continue later</p>
+        </section>
+
+        <!-- Job Name -->
+        <section class="job-name">
+            <label for="jobName">Job Name:</label>
+            <input type="text" class="input-field" id="jobName" placeholder="Enter job/project name">
+        </section>
+
+        <!-- Client Details -->
+        <section class="section">
+            <h2 class="section-header">Client Details</h2>
+            <div class="section-content">
+                <div class="two-column">
+                    <div class="field-group">
+                        <label for="contactPerson">Contact Person:</label>
+                        <input type="text" class="input-field" id="contactPerson" placeholder="Contact">
+                    </div>
+                    <div class="field-group">
+                        <label for="phone">Phone:</label>
+                        <input type="tel" class="input-field" id="phone" placeholder="Phone">
+                    </div>
+                    <div class="field-group">
+                        <label for="email">Email:</label>
+                        <input type="email" class="input-field" id="email" placeholder="Email">
+                    </div>
+                    <div class="field-group">
+                        <label for="quoteDueDate">Quote Due Date:</label>
+                        <input type="date" class="input-field" id="quoteDueDate">
+                    </div>
+                </div>
+                <div class="field-group">
+                    <label for="businessName">Business/Company Name:</label>
+                    <input type="text" class="input-field" id="businessName" placeholder="Company">
+                </div>
+                <div class="field-group">
+                    <label>Business Address:</label>
+                    <div class="three-column">
+                        <input type="text" class="input-field" id="businessStreet" placeholder="Street address">
+                        <input type="text" class="input-field" id="businessSuburb" placeholder="Suburb/Town">
+                        <input type="text" class="input-field" id="businessState" placeholder="State">
+                    </div>
+                    <div class="two-column">
+                        <input type="text" class="input-field" id="businessPostcode" placeholder="Postcode">
+                        <input type="text" class="input-field" id="businessCountry" placeholder="Country" value="Australia">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Site Details -->
+        <section class="section">
+            <h2 class="section-header">Site Details</h2>
+            <div class="section-content">
+                <div class="field-group">
+                    <label>Site Address:</label>
+                    <div class="three-column">
+                        <input type="text" class="input-field" id="siteStreet" placeholder="Street address">
+                        <input type="text" class="input-field" id="siteSuburb" placeholder="Suburb/Town">
+                        <input type="text" class="input-field" id="siteState" placeholder="State">
+                    </div>
+                    <div class="two-column">
+                        <input type="text" class="input-field" id="sitePostcode" placeholder="Postcode">
+                        <input type="text" class="input-field" id="siteCountry" placeholder="Country" value="Australia">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Scope -->
+        <section class="section">
+            <h2 class="section-header">Scope of Work</h2>
+            <div class="section-content">
+                <textarea class="notes-area" id="scopeOfWork" placeholder="Describe the scope of electrical work to be performed..."></textarea>
+            </div>
+        </section>
+
+        <!-- Items -->
+        <section class="section">
+            <h2 class="section-header">Items & Materials</h2>
+            <div class="section-content">
+                <div class="table-container">
+                    <table id="itemsTable">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Qty</th>
+                                <th>Unit Price</th>
+                                <th>Markup Inc.</th>
+                                <th>GST Inc.</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="text" class="input-field" placeholder="Item description"></td>
+                                <td><input type="number" class="input-field" placeholder="1" min="0"></td>
+                                <td><input type="number" class="input-field" step="0.01" placeholder="0.00"></td>
+                                <td><input type="checkbox" class="checkbox-field"></td>
+                                <td><input type="checkbox" class="checkbox-field"></td>
+                                <td><input type="number" class="readonly-field" step="0.01" placeholder="0.00" readonly></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button class="add-button" onclick="addItemRow()">+ Add Item</button>
+                <div class="subtotal-line">
+                    Materials Subtotal: $<span id="itemsSubtotal">0.00</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Labour -->
+        <section class="section">
+            <h2 class="section-header">Labour</h2>
+            <div class="section-content">
+                <div class="two-column">
+                    <div class="field-group">
+                        <label for="normalRate">Normal Hour Rate ($):</label>
+                        <input type="number" class="input-field" id="normalRate" value="75" step="0.01" placeholder="75.00">
+                    </div>
+                    <div class="field-group">
+                        <label for="overtimeRate">Overtime Hour Rate ($):</label>
+                        <input type="number" class="input-field" id="overtimeRate" value="150" step="0.01" placeholder="150.00">
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table id="labourTable">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Hours</th>
+                                <th>Overtime</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="text" class="input-field" placeholder="Labour description"></td>
+                                <td><input type="number" class="input-field" step="0.5" placeholder="0.0"></td>
+                                <td><input type="checkbox" class="checkbox-field"></td>
+                                <td><textarea class="expanding-field" placeholder=""></textarea></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button class="add-button" onclick="addLabourRow()">+ Add Labour</button>
+                <div class="labour-totals">
+                    <div class="subtotal-line">Total Hours: <span id="totalHours">0.0</span> hrs</div>
+                    <div class="subtotal-line">Normal Hours: <span id="normalHours">0.0</span> hrs ($<span id="normalCost">0.00</span>)</div>
+                    <div class="subtotal-line">Overtime Hours: <span id="overtimeHours">0.0</span> hrs ($<span id="overtimeCost">0.00</span>)</div>
+                    <div class="subtotal-line">Labour Cost: $<span id="labourSubtotal">0.00</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Notes on Labour and Equipment -->
+        <section class="section">
+            <h2 class="section-header">Notes on Labour and Equipment</h2>
+            <div class="section-content">
+                <textarea class="notes-area" id="pricesDiscussed" placeholder="Notes on suppliers and any specific pricing discussions, negotiations, or agreements made with the client..."></textarea>
+            </div>
+        </section>
+
+        <!-- Provisionals -->
+        <section class="section">
+            <h2 class="section-header">Provisionals</h2>
+            <div class="section-content">
+                <div class="table-container">
+                    <table id="provisionalsTable">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Qty</th>
+                                <th>Unit Price</th>
+                                <th>Markup Inc.</th>
+                                <th>GST Inc.</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="text" class="input-field" placeholder="Provisional item description"></td>
+                                <td><input type="number" class="input-field" placeholder="1" min="0"></td>
+                                <td><input type="number" class="input-field" step="0.01" placeholder="0.00"></td>
+                                <td><input type="checkbox" class="checkbox-field"></td>
+                                <td><input type="checkbox" class="checkbox-field"></td>
+                                <td><input type="number" class="readonly-field" step="0.01" placeholder="0.00" readonly></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button class="add-button" onclick="addProvisionalsRow()">+ Add Provisional</button>
+                <div class="subtotal-line">
+                    Provisionals Subtotal: $<span id="provisionalsSubtotal">0.00</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Optional -->
+        <section class="section">
+            <h2 class="section-header">Optional Items</h2>
+            <div class="section-content">
+                <div class="table-container">
+                    <table id="optionalTable">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Qty</th>
+                                <th>Unit Price</th>
+                                <th>Markup Inc.</th>
+                                <th>GST Inc.</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="text" class="input-field" placeholder="Optional item description"></td>
+                                <td><input type="number" class="input-field" placeholder="1" min="0"></td>
+                                <td><input type="number" class="input-field" step="0.01" placeholder="0.00"></td>
+                                <td><input type="checkbox" class="checkbox-field"></td>
+                                <td><input type="checkbox" class="checkbox-field"></td>
+                                <td><input type="number" class="readonly-field" step="0.01" placeholder="0.00" readonly></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button class="add-button" onclick="addOptionalRow()">+ Add Optional</button>
+                <div class="subtotal-line">
+                    Optional Items Subtotal: $<span id="optionalSubtotal">0.00</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Totals -->
+        <section class="total-section">
+            <h3>Quote Summary</h3>
+            <div class="total-row">
+                <span>Materials Subtotal:</span>
+                <span>$<span id="finalItemsSubtotal">0.00</span></span>
+            </div>
+            <div class="total-row">
+                <span>Labour Cost:</span>
+                <span>$<span id="finalLabourSubtotal">0.00</span></span>
+            </div>
+            <div class="total-row">
+                <span>Provisionals:</span>
+                <span>$<span id="finalProvisionalsSubtotal">0.00</span></span>
+            </div>
+            <div class="total-row">
+                <span>Subtotal (exc. GST):</span>
+                <span>$<span id="subtotalExcGST">0.00</span></span>
+            </div>
+            <div class="total-row">
+                <span>GST (10%):</span>
+                <span>$<span id="gstAmount">0.00</span></span>
+            </div>
+            <div class="total-row final-total">
+                <span>TOTAL (inc. GST):</span>
+                <span>$<span id="totalIncGST">0.00</span></span>
+            </div>
+        </section>
+
+        <!-- Labour Summary -->
+        <section class="total-section">
+            <h3>Labour Summary</h3>
+            <div class="total-row">
+                <span>Normal Hours:</span>
+                <span><span id="finalNormalHours">0.0</span> hrs ($<span id="finalNormalCost">0.00</span>)</span>
+            </div>
+            <div class="total-row">
+                <span>Overtime Hours:</span>
+                <span><span id="finalOvertimeHours">0.0</span> hrs ($<span id="finalOvertimeCost">0.00</span>)</span>
+            </div>
+            <div class="total-row final-total">
+                <span>Total Hours:</span>
+                <span><span id="finalTotalHours">0.0</span> hrs ($<span id="finalTotalLabourCost">0.00</span>)</span>
+            </div>
+        </section>
+
+        <!-- Optional Items Summary -->
+        <section class="total-section">
+            <h3>Optional Items</h3>
+            <div class="total-row final-total">
+                <span>Optional Items Total:</span>
+                <span>$<span id="finalOptionalSubtotal">0.00</span></span>
+            </div>
+        </section>
+
+        <!-- Additional Notes -->
+        <section class="section">
+            <h2 class="section-header">Additional Notes & Conditions</h2>
+            <div class="section-content">
+                <textarea class="notes-area" id="additionalNotes" placeholder="Terms and conditions, warranty information, completion timeframes, etc."></textarea>
+            </div>
+        </section>
+
+        <div class="action-buttons">
+            <button class="action-button" onclick="printQuote()">Print Quote</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
