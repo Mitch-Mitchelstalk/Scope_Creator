@@ -624,7 +624,16 @@ function loadSampleData(quoteData) {
     } catch (error) {
         console.error('Error loading sample data:', error);
     }
-}<input type="checkbox" class="checkbox-field"></td>
+
+
+function addItemRow() {
+    const table = document.getElementById('itemsTable').getElementsByTagName('tbody')[0];
+    const newRow = table.insertRow();
+    newRow.innerHTML = `
+        <td><input type="text" class="input-field" placeholder="Item description"></td>
+        <td><input type="number" class="input-field" placeholder="1" min="0" onchange="calculateItemTotal(this)"></td>
+        <td><input type="number" class="input-field" step="0.01" placeholder="0.00" onchange="calculateItemTotal(this)"></td>
+        <td style="text-align: center;"><input type="checkbox" class="checkbox-field"></td>
         <td style="text-align: center;"><input type="checkbox" class="checkbox-field"></td>
         <td><input type="number" class="readonly-field" step="0.01" placeholder="0.00" readonly></td>
     `;
