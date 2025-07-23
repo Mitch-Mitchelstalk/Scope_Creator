@@ -1,0 +1,110 @@
+{
+  "timestamp": "2025-07-22T13:43:08.443Z",
+  "jobName": "Location - Work Description ",
+  "contactPerson": "Alan",
+  "phone": "12345678",
+  "email": "alan@alan.com",
+  "quoteDueDate": "2025-07-29",
+  "businessName": "Contructing Constructions",
+  "businessAddress": {
+    "street": "13 alan st",
+    "suburb": "Alanville",
+    "state": "ALN",
+    "postcode": "1234",
+    "country": "Australia"
+  },
+  "siteAddress": {
+    "street": "15 Jobsite St",
+    "suburb": "Jobsiteville",
+    "state": "JSV",
+    "postcode": "4321",
+    "country": "Australia"
+  },
+  "scopeOfWork": "Doing stuff to fix things\n- 5 things\n- some work on weekend\n- things are broken\n- went there and fix things already\n- found faults",
+  "normalRate": 75,
+  "overtimeRate": 220,
+  "pricesDiscussed": "haven't spoken to client about costs, ",
+  "additionalNotes": "here's some extra notes to tie it all together and what is to be concentrated on once tender/quote done",
+  "items": [
+    [
+      "vsd 3ph 5kW",
+      "7",
+      "600",
+      false,
+      false,
+      "4200.00"
+    ],
+    [
+      "SWB - 400A",
+      "1",
+      "90000",
+      true,
+      false,
+      "90000.00"
+    ],
+    [
+      "new equipment type 1",
+      "4",
+      "700",
+      false,
+      false,
+      "2800.00"
+    ]
+  ],
+  "labour": [
+    [
+      "sparky",
+      "10",
+      false,
+      ""
+    ],
+    [
+      "pm",
+      "5",
+      false,
+      ""
+    ],
+    [
+      "sparky x 2",
+      "20",
+      true,
+      "2 guys for 10 hours doing out of hours work"
+    ]
+  ],
+  "provisionals": [
+    [
+      "back-up generator - 7kVA",
+      "1",
+      "3000",
+      false,
+      false,
+      "3000.00"
+    ],
+    [
+      "extra guy for Geni works",
+      "1",
+      "175",
+      false,
+      false,
+      "175.00"
+    ]
+  ],
+  "optional": [
+    [
+      "larger SWB - 450A",
+      "1",
+      "120000",
+      false,
+      false,
+      "120000.00"
+    ],
+    [
+      "extra DSB",
+      "1",
+      "30000",
+      false,
+      false,
+      "30000.00"
+    ]
+  ]
+}
