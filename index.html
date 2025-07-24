@@ -405,6 +405,20 @@
                 page-break-inside: avoid !important;
             }
         }
+
+        @media print {
+            textarea, .notes-area, .expanding-field {
+                height: auto !important;
+                min-height: auto !important;
+                max-height: none !important;
+                overflow: visible !important;
+                resize: none !important;
+            }
+            .section {
+                page-break-inside: auto !important;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -992,62 +1006,43 @@
 
         function preprocessTextAreasForPrint() {
             const textareas = document.querySelectorAll('textarea, .notes-area, .expanding-field');
-            
             textareas.forEach(textarea => {
-                // Store original height
+                // Store original height if needed for cleanup
                 textarea.dataset.originalHeight = textarea.style.height;
-                
-                // Temporarily set to auto to get accurate scrollHeight
+
+                // Temporarily set height to auto to calculate scrollHeight
                 textarea.style.height = 'auto';
                 textarea.style.minHeight = '0';
                 textarea.style.maxHeight = 'none';
-                
+                textarea.style.overflow = 'visible';
+
                 // Force reflow to get accurate measurements
                 const scrollHeight = textarea.scrollHeight;
-                
-                if (!textarea.value.trim()) {
-                    // Set minimum height for empty textareas
-                    textarea.style.height = '80px';
-                    return;
-                }
-                
-                // Calculate actual height needed including padding
                 const computedStyle = window.getComputedStyle(textarea);
                 const paddingTop = parseFloat(computedStyle.paddingTop);
                 const paddingBottom = parseFloat(computedStyle.paddingBottom);
                 const borderTop = parseFloat(computedStyle.borderTopWidth);
                 const borderBottom = parseFloat(computedStyle.borderBottomWidth);
-                
-                const totalHeight = scrollHeight + borderTop + borderBottom;
-                
-                // Set the exact height needed
-                textarea.style.height = totalHeight + 'px';
-                textarea.style.minHeight = totalHeight + 'px';
+
+                // Calculate the exact height needed
+                const totalHeight = scrollHeight + borderTop + borderBottom + paddingTop + paddingBottom;
+                textarea.style.height = `${totalHeight}px`;
+                textarea.style.minHeight = `${totalHeight}px`;
                 textarea.style.maxHeight = 'none';
-                textarea.style.overflow = 'visible';
                 textarea.style.resize = 'none';
-                
-                // Remove any page break constraints on parent section
-                const section = textarea.closest('.section');
-                if (section) {
-                    section.style.pageBreakInside = 'auto';
-                    section.classList.remove('textarea-page-break');
-                }
             });
         }
 
         function cleanupAfterPrint() {
-            // Remove the print-specific classes and styles
-            const sections = document.querySelectorAll('.section');
-            sections.forEach(section => {
-                section.classList.remove('textarea-page-break', 'keep-together');
-                section.style.pageBreakBefore = '';
-                section.style.pageBreakInside = '';
-            });
-            
             const textareas = document.querySelectorAll('textarea, .notes-area, .expanding-field');
             textareas.forEach(textarea => {
-                textarea.style.height = '';
+                // Restore original height if stored
+                const originalHeight = textarea.dataset.originalHeight;
+                if (originalHeight) {
+                    textarea.style.height = originalHeight;
+                } else {
+                    textarea.style.height = '';
+                }
                 textarea.style.minHeight = '';
                 textarea.style.maxHeight = '';
                 textarea.style.overflow = '';
@@ -1276,6 +1271,17 @@
             
             // Set initial title
             updatePageTitle();
+        });
+
+        // Function to resize textarea based on content
+        function resizeTextarea(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
+        }
+
+        // Attach the resize function to all textareas on input
+        document.querySelectorAll('textarea').forEach(textarea => {
+            textarea.addEventListener('input', () => resizeTextarea(textarea));
         });
     </script>
     
