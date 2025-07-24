@@ -1006,30 +1006,46 @@
 
         function preprocessTextAreasForPrint() {
             const textareas = document.querySelectorAll('textarea, .notes-area, .expanding-field');
+            
             textareas.forEach(textarea => {
-                // Store original height if needed for cleanup
+                // Store original styles
                 textarea.dataset.originalHeight = textarea.style.height;
-
-                // Temporarily set height to auto to calculate scrollHeight
-                textarea.style.height = 'auto';
-                textarea.style.minHeight = '0';
+                textarea.dataset.originalOverflow = textarea.style.overflow;
+                
+                // Create a measurement div
+                const measureDiv = document.createElement('div');
+                measureDiv.style.position = 'absolute';
+                measureDiv.style.visibility = 'hidden';
+                measureDiv.style.left = '-9999px';
+                measureDiv.style.width = textarea.offsetWidth + 'px';
+                measureDiv.style.padding = window.getComputedStyle(textarea).padding;
+                measureDiv.style.fontSize = window.getComputedStyle(textarea).fontSize;
+                measureDiv.style.fontFamily = window.getComputedStyle(textarea).fontFamily;
+                measureDiv.style.lineHeight = window.getComputedStyle(textarea).lineHeight;
+                measureDiv.style.whiteSpace = 'pre-wrap';
+                measureDiv.style.wordWrap = 'break-word';
+                measureDiv.style.wordBreak = 'break-word';
+                
+                // Set content with line breaks preserved
+                measureDiv.innerHTML = (textarea.value || '').replace(/\n/g, '<br>');
+                
+                // Add to body to measure
+                document.body.appendChild(measureDiv);
+                
+                // Get the actual height needed
+                const neededHeight = measureDiv.offsetHeight;
+                
+                // Remove measurement div
+                document.body.removeChild(measureDiv);
+                
+                // Apply the height with extra buffer for safety
+                const finalHeight = neededHeight + 20;
+                textarea.style.height = finalHeight + 'px';
+                textarea.style.minHeight = finalHeight + 'px';
                 textarea.style.maxHeight = 'none';
                 textarea.style.overflow = 'visible';
-
-                // Force reflow to get accurate measurements
-                const scrollHeight = textarea.scrollHeight;
-                const computedStyle = window.getComputedStyle(textarea);
-                const paddingTop = parseFloat(computedStyle.paddingTop);
-                const paddingBottom = parseFloat(computedStyle.paddingBottom);
-                const borderTop = parseFloat(computedStyle.borderTopWidth);
-                const borderBottom = parseFloat(computedStyle.borderBottomWidth);
-
-                // Calculate the exact height needed
-                const totalHeight = scrollHeight + borderTop + borderBottom + paddingTop + paddingBottom;
-                textarea.style.height = `${totalHeight}px`;
-                textarea.style.minHeight = `${totalHeight}px`;
-                textarea.style.maxHeight = 'none';
-                textarea.style.resize = 'none';
+                
+                console.log(`Textarea expanded from ${textarea.dataset.originalHeight} to ${finalHeight}px`);
             });
         }
 
