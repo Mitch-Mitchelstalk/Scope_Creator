@@ -970,7 +970,7 @@
             // Update page title for PDF filename
             updatePageTitle();
             
-            // Pre-process text areas for printing
+            // Pre-process text areas for printing with line-based calculation
             preprocessTextAreasForPrint();
             
             // Auto-save JSON file before printing
@@ -992,7 +992,7 @@
                     console.error('Auto-save failed:', error);
                 }
                 
-                // Print after auto-save attempt
+                // Print after auto-save attempt - increased delay to ensure height changes applied
                 setTimeout(() => {
                     window.print();
                     
@@ -1000,7 +1000,7 @@
                     setTimeout(() => {
                         cleanupAfterPrint();
                     }, 1000);
-                }, 100);
+                }, 200); // Increased delay
             }, 100);
         }
 
@@ -1008,61 +1008,88 @@
             const textareas = document.querySelectorAll('textarea, .notes-area, .expanding-field');
             
             textareas.forEach(textarea => {
-                // Store original styles
-                textarea.dataset.originalHeight = textarea.style.height;
-                textarea.dataset.originalOverflow = textarea.style.overflow;
+                const text = textarea.value || '';
+                if (!text.trim()) return; // Skip empty textareas
                 
-                // Create a measurement div
-                const measureDiv = document.createElement('div');
-                measureDiv.style.position = 'absolute';
-                measureDiv.style.visibility = 'hidden';
-                measureDiv.style.left = '-9999px';
-                measureDiv.style.width = textarea.offsetWidth + 'px';
-                measureDiv.style.padding = window.getComputedStyle(textarea).padding;
-                measureDiv.style.fontSize = window.getComputedStyle(textarea).fontSize;
-                measureDiv.style.fontFamily = window.getComputedStyle(textarea).fontFamily;
-                measureDiv.style.lineHeight = window.getComputedStyle(textarea).lineHeight;
-                measureDiv.style.whiteSpace = 'pre-wrap';
-                measureDiv.style.wordWrap = 'break-word';
-                measureDiv.style.wordBreak = 'break-word';
+                // Store original height for cleanup
+                textarea.dataset.originalHeight = textarea.style.height || '';
                 
-                // Set content with line breaks preserved
-                measureDiv.innerHTML = (textarea.value || '').replace(/\n/g, '<br>');
+                // Calculate lines needed
+                const totalLines = calculateTextLines(textarea, text);
                 
-                // Add to body to measure
-                document.body.appendChild(measureDiv);
+                // Get line height (default to 16px if can't determine)
+                const computedStyle = window.getComputedStyle(textarea);
+                const lineHeight = parseInt(computedStyle.lineHeight) || 16;
+                const paddingTop = parseInt(computedStyle.paddingTop) || 8;
+                const paddingBottom = parseInt(computedStyle.paddingBottom) || 8;
+                const borderTop = parseInt(computedStyle.borderTopWidth) || 1;
+                const borderBottom = parseInt(computedStyle.borderBottomWidth) || 1;
                 
-                // Get the actual height needed
-                const neededHeight = measureDiv.offsetHeight;
+                // Calculate total height needed
+                const contentHeight = totalLines * lineHeight;
+                const totalHeight = contentHeight + paddingTop + paddingBottom + borderTop + borderBottom;
                 
-                // Remove measurement div
-                document.body.removeChild(measureDiv);
+                // Set height with !important to override print CSS
+                textarea.style.setProperty('height', totalHeight + 'px', 'important');
+                textarea.style.setProperty('min-height', totalHeight + 'px', 'important');
+                textarea.style.setProperty('max-height', 'none', 'important');
+                textarea.style.setProperty('overflow', 'visible', 'important');
                 
-                // Apply the height with extra buffer for safety
-                const finalHeight = neededHeight + 20;
-                textarea.style.height = finalHeight + 'px';
-                textarea.style.minHeight = finalHeight + 'px';
-                textarea.style.maxHeight = 'none';
-                textarea.style.overflow = 'visible';
-                
-                console.log(`Textarea expanded from ${textarea.dataset.originalHeight} to ${finalHeight}px`);
+                console.log(`Textarea expanded: ${totalLines} lines = ${totalHeight}px`);
             });
+        }
+
+        function calculateTextLines(textarea, text) {
+            // Count explicit line breaks
+            const explicitLines = (text.match(/\n/g) || []).length + 1;
+            
+            // Calculate wrapped lines
+            const textareaWidth = textarea.offsetWidth;
+            const computedStyle = window.getComputedStyle(textarea);
+            const paddingLeft = parseInt(computedStyle.paddingLeft) || 8;
+            const paddingRight = parseInt(computedStyle.paddingRight) || 8;
+            const availableWidth = textareaWidth - paddingLeft - paddingRight;
+            
+            // Estimate character width (rough approximation)
+            const fontSize = parseInt(computedStyle.fontSize) || 12;
+            const avgCharWidth = fontSize * 0.6; // Rough estimate for average character width
+            const charsPerLine = Math.floor(availableWidth / avgCharWidth);
+            
+            if (charsPerLine <= 0) return explicitLines; // Fallback
+            
+            // Split text by explicit line breaks, then calculate wrapped lines for each
+            const textLines = text.split('\n');
+            let totalWrappedLines = 0;
+            
+            textLines.forEach(line => {
+                if (line.length === 0) {
+                    totalWrappedLines += 1; // Empty line still takes space
+                } else {
+                    const wrappedLines = Math.ceil(line.length / charsPerLine);
+                    totalWrappedLines += wrappedLines;
+                }
+            });
+            
+            // Return the larger of explicit lines or calculated wrapped lines
+            return Math.max(explicitLines, totalWrappedLines);
         }
 
         function cleanupAfterPrint() {
             const textareas = document.querySelectorAll('textarea, .notes-area, .expanding-field');
             textareas.forEach(textarea => {
-                // Restore original height if stored
+                // Restore original height
                 const originalHeight = textarea.dataset.originalHeight;
-                if (originalHeight) {
+                if (originalHeight !== undefined) {
                     textarea.style.height = originalHeight;
-                } else {
-                    textarea.style.height = '';
                 }
-                textarea.style.minHeight = '';
-                textarea.style.maxHeight = '';
-                textarea.style.overflow = '';
-                textarea.style.resize = '';
+                
+                // Clear other print-specific styles
+                textarea.style.removeProperty('min-height');
+                textarea.style.removeProperty('max-height');
+                textarea.style.removeProperty('overflow');
+                
+                // Clear stored data
+                delete textarea.dataset.originalHeight;
             });
         }
 
