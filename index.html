@@ -1005,38 +1005,105 @@
         }
 
         function preprocessTextAreasForPrint() {
+            // Standard A4 page dimensions (accounting for margins)
+            const pageHeight = 1000; // Approximate usable height in pixels
+            const lineHeight = 16;
+            
             const textareas = document.querySelectorAll('textarea, .notes-area, .expanding-field');
             
             textareas.forEach(textarea => {
                 const text = textarea.value || '';
-                if (!text.trim()) return; // Skip empty textareas
+                if (!text.trim()) return;
                 
-                // Store original height for cleanup
-                textarea.dataset.originalHeight = textarea.style.height || '';
+                // Calculate current position on page
+                const currentPagePosition = calculatePagePosition(textarea);
+                const remainingPageSpace = pageHeight - (currentPagePosition % pageHeight);
                 
-                // Calculate lines needed
+                // Calculate total content height needed
                 const totalLines = calculateTextLines(textarea, text);
+                const totalHeight = totalLines * lineHeight + 16; // +16 for padding
                 
-                // Get line height (default to 16px if can't determine)
-                const computedStyle = window.getComputedStyle(textarea);
-                const lineHeight = parseInt(computedStyle.lineHeight) || 16;
-                const paddingTop = parseInt(computedStyle.paddingTop) || 8;
-                const paddingBottom = parseInt(computedStyle.paddingBottom) || 8;
-                const borderTop = parseInt(computedStyle.borderTopWidth) || 1;
-                const borderBottom = parseInt(computedStyle.borderBottomWidth) || 1;
-                
-                // Calculate total height needed
-                const contentHeight = totalLines * lineHeight;
-                const totalHeight = contentHeight + paddingTop + paddingBottom + borderTop + borderBottom;
-                
-                // Set height with !important to override print CSS
-                textarea.style.setProperty('height', totalHeight + 'px', 'important');
-                textarea.style.setProperty('min-height', totalHeight + 'px', 'important');
-                textarea.style.setProperty('max-height', 'none', 'important');
-                textarea.style.setProperty('overflow', 'visible', 'important');
-                
-                console.log(`Textarea expanded: ${totalLines} lines = ${totalHeight}px`);
+                // If content exceeds remaining space, split it
+                if (totalHeight > remainingPageSpace) {
+                    splitTextAreaContent(textarea, text, remainingPageSpace, lineHeight);
+                } else {
+                    // Normal expansion
+                    textarea.style.setProperty('height', totalHeight + 'px', 'important');
+                }
             });
+        }
+
+        function calculatePagePosition(element) {
+            let totalHeight = 0;
+            let currentElement = element;
+            
+            // Walk up the DOM to calculate cumulative height
+            while (currentElement && currentElement !== document.body) {
+                const rect = currentElement.getBoundingClientRect();
+                const style = window.getComputedStyle(currentElement);
+                
+                // Add element height and margins
+                totalHeight += rect.height;
+                totalHeight += parseInt(style.marginTop) || 0;
+                totalHeight += parseInt(style.marginBottom) || 0;
+                
+                currentElement = currentElement.previousElementSibling || currentElement.parentElement;
+            }
+            
+            return totalHeight;
+        }
+
+        function splitTextAreaContent(textarea, text, remainingSpace, lineHeight) {
+            const linesPerPage = Math.floor(remainingSpace / lineHeight) - 2; // Buffer for padding
+            const textLines = text.split('\n');
+            
+            // Calculate how many lines fit on current page
+            let currentPageLines = 0;
+            let lineIndex = 0;
+            
+            // Create container for split content
+            const container = document.createElement('div');
+            container.className = 'split-textarea-container';
+            
+            while (lineIndex < textLines.length) {
+                const pageDiv = document.createElement('div');
+                pageDiv.className = 'split-textarea-page';
+                pageDiv.style.cssText = `
+                    border: 1px solid #000 !important;
+                    padding: 8px !important;
+                    background: white !important;
+                    font-family: inherit !important;
+                    font-size: 12px !important;
+                    white-space: pre-wrap !important;
+                    word-wrap: break-word !important;
+                    margin-bottom: 0 !important;
+                    page-break-inside: avoid !important;
+                `;
+                
+                // Add lines to current page
+                const pageLines = [];
+                const maxLinesThisPage = (lineIndex === 0) ? linesPerPage : Math.floor(1000 / lineHeight) - 2;
+                
+                while (lineIndex < textLines.length && pageLines.length < maxLinesThisPage) {
+                    pageLines.push(textLines[lineIndex]);
+                    lineIndex++;
+                }
+                
+                pageDiv.textContent = pageLines.join('\n');
+                container.appendChild(pageDiv);
+                
+                // Force page break after each section except the last
+                if (lineIndex < textLines.length) {
+                    pageDiv.style.pageBreakAfter = 'always';
+                }
+            }
+            
+            // Replace original textarea with split content
+            textarea.style.display = 'none';
+            textarea.parentNode.insertBefore(container, textarea);
+            
+            // Store reference for cleanup
+            textarea.dataset.splitContainer = 'true';
         }
 
         function calculateTextLines(textarea, text) {
@@ -1075,20 +1142,27 @@
         }
 
         function cleanupAfterPrint() {
-            const textareas = document.querySelectorAll('textarea, .notes-area, .expanding-field');
+            // Remove split containers
+            const splitContainers = document.querySelectorAll('.split-textarea-container');
+            splitContainers.forEach(container => container.remove());
+            
+            // Restore original textareas
+            const textareas = document.querySelectorAll('textarea[data-split-container]');
             textareas.forEach(textarea => {
-                // Restore original height
+                textarea.style.display = '';
+                delete textarea.dataset.splitContainer;
+            });
+            
+            // Original cleanup code...
+            const allTextareas = document.querySelectorAll('textarea, .notes-area, .expanding-field');
+            allTextareas.forEach(textarea => {
                 const originalHeight = textarea.dataset.originalHeight;
                 if (originalHeight !== undefined) {
                     textarea.style.height = originalHeight;
                 }
-                
-                // Clear other print-specific styles
                 textarea.style.removeProperty('min-height');
                 textarea.style.removeProperty('max-height');
                 textarea.style.removeProperty('overflow');
-                
-                // Clear stored data
                 delete textarea.dataset.originalHeight;
             });
         }
