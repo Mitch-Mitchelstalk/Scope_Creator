@@ -731,6 +731,7 @@
         </div>
 
         <button class="action-button" onclick="printQuote()">Print Quote</button>
+        <button class="action-button" onclick="shareScope()">Share Scope</button>
     </div>
 
     <script>
@@ -1307,22 +1308,20 @@
             const data = [];
             
             for (let i = 0; i < rows.length; i++) {
-                const rowData = [];
+                const rowData = {};
                 const cells = rows[i].getElementsByTagName('td');
                 
                 for (let j = 0; j < cells.length; j++) {
-                    const input = cells[j].querySelector('input[type="text"], input[type="number"]');
+                    const input = cells[j].querySelector('input[type="text"], input[type="number"]:not(.readonly-field)');
                     const checkbox = cells[j].querySelector('input[type="checkbox"]');
                     const textarea = cells[j].querySelector('textarea');
                     
                     if (checkbox) {
-                        rowData.push(checkbox.checked);
+                        rowData[`col_${j}_checkbox`] = checkbox.checked;
                     } else if (input) {
-                        rowData.push(input.value);
+                        rowData[`col_${j}_input`] = input.value;
                     } else if (textarea) {
-                        rowData.push(textarea.value);
-                    } else {
-                        rowData.push('');
+                        rowData[`col_${j}_textarea`] = textarea.value;
                     }
                 }
                 data.push(rowData);
@@ -1345,7 +1344,7 @@
                 if (i === 0) {
                     row = tbody.rows[0];
                 } else {
-                    // Add new row
+                    // Add new row based on table type
                     if (tableId === 'itemsTable') addItemRow();
                     else if (tableId === 'labourTable') addLabourRow();
                     else if (tableId === 'provisionalsTable') addProvisionalsRow();
@@ -1354,21 +1353,32 @@
                 }
                 
                 const cells = row.getElementsByTagName('td');
-                for (let j = 0; j < data[i].length && j < cells.length; j++) {
-                    const input = cells[j].querySelector('input[type="text"], input[type="number"]');
+                const rowData = data[i];
+                
+                for (let j = 0; j < cells.length; j++) {
+                    const input = cells[j].querySelector('input[type="text"], input[type="number"]:not(.readonly-field)');
                     const checkbox = cells[j].querySelector('input[type="checkbox"]');
                     const textarea = cells[j].querySelector('textarea');
                     
-                    if (checkbox) {
-                        checkbox.checked = data[i][j];
-                    } else if (input) {
-                        input.value = data[i][j];
-                    } else if (textarea) {
-                        textarea.value = data[i][j];
+                    if (checkbox && rowData[`col_${j}_checkbox`] !== undefined) {
+                        checkbox.checked = rowData[`col_${j}_checkbox`];
+                    } else if (input && rowData[`col_${j}_input`] !== undefined) {
+                        input.value = rowData[`col_${j}_input`];
+                    } else if (textarea && rowData[`col_${j}_textarea`] !== undefined) {
+                        textarea.value = rowData[`col_${j}_textarea`];
                         autoExpand(textarea);
                     }
                 }
             }
+            
+            // Force recalculations after loading all data
+            setTimeout(() => {
+                calculateItemsSubtotal();
+                calculateLabourTotals();
+                calculateProvisionalsSubtotal();
+                calculateOptionalSubtotal();
+                calculateTotals();
+            }, 50);
         }
 
         // Initialise calculations and add event listeners for dynamic title updates
@@ -1400,6 +1410,212 @@
         document.querySelectorAll('textarea').forEach(textarea => {
             textarea.addEventListener('input', () => resizeTextarea(textarea));
         });
+
+function shareScope() {
+            const jobName = document.getElementById('jobName').value || 'Electrical Works Quote';
+            const contactPerson = document.getElementById('contactPerson').value;
+            const phone = document.getElementById('phone').value;
+            const email = document.getElementById('email').value;
+            const quoteDueDate = document.getElementById('quoteDueDate').value;
+            const businessName = document.getElementById('businessName').value;
+            const scopeOfWork = document.getElementById('scopeOfWork').value;
+            const pricesDiscussed = document.getElementById('pricesDiscussed').value;
+            const additionalNotes = document.getElementById('additionalNotes').value;
+            
+            // Format date
+            let dueDateText = '';
+            if (quoteDueDate) {
+                const dateObj = new Date(quoteDueDate);
+                dueDateText = dateObj.toLocaleDateString('en-AU');
+            }
+            
+            // Build address strings
+            let businessAddress = '';
+            const businessStreet = document.getElementById('businessStreet').value;
+            const businessSuburb = document.getElementById('businessSuburb').value;
+            const businessState = document.getElementById('businessState').value;
+            const businessPostcode = document.getElementById('businessPostcode').value;
+            
+            if (businessStreet || businessSuburb || businessState || businessPostcode) {
+                businessAddress = [businessStreet, businessSuburb, businessState, businessPostcode].filter(Boolean).join(', ');
+            }
+            
+            let siteAddress = '';
+            const siteStreet = document.getElementById('siteStreet').value;
+            const siteSuburb = document.getElementById('siteSuburb').value;
+            const siteState = document.getElementById('siteState').value;
+            const sitePostcode = document.getElementById('sitePostcode').value;
+            
+            if (siteStreet || siteSuburb || siteState || sitePostcode) {
+                siteAddress = [siteStreet, siteSuburb, siteState, sitePostcode].filter(Boolean).join(', ');
+            }
+            
+            // Get totals
+            const totalIncGST = document.getElementById('totalIncGST').textContent;
+            const totalHours = document.getElementById('finalTotalHours').textContent;
+            
+            // Build email content
+            let emailBody = `CINC WHELAN ELECTRICAL - SCOPE OF WORK\n`;
+            emailBody += `=======================================\n\n`;
+            
+            if (jobName) emailBody += `JOB: ${jobName}\n`;
+            if (dueDateText) emailBody += `DUE DATE: ${dueDateText}\n`;
+            emailBody += `\n`;
+            
+            if (contactPerson || businessName || phone || email) {
+                emailBody += `CLIENT DETAILS:\n`;
+                emailBody += `---------------\n`;
+                if (contactPerson) emailBody += `Contact: ${contactPerson}\n`;
+                if (businessName) emailBody += `Company: ${businessName}\n`;
+                if (phone) emailBody += `Phone: ${phone}\n`;
+                if (email) emailBody += `Email: ${email}\n`;
+                if (businessAddress) emailBody += `Address: ${businessAddress}\n`;
+                emailBody += `\n`;
+            }
+            
+            if (siteAddress) {
+                emailBody += `SITE ADDRESS:\n`;
+                emailBody += `-------------\n`;
+                emailBody += `${siteAddress}\n\n`;
+            }
+            
+            if (scopeOfWork) {
+                emailBody += `SCOPE OF WORK:\n`;
+                emailBody += `--------------\n`;
+                emailBody += `${scopeOfWork}\n\n`;
+            }
+            
+            // Add items summary
+            const itemsTable = document.getElementById('itemsTable');
+            const itemRows = itemsTable.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+            let hasItems = false;
+            
+            for (let i = 0; i < itemRows.length; i++) {
+                const desc = itemRows[i].cells[0].querySelector('input').value;
+                if (desc.trim()) {
+                    if (!hasItems) {
+                        emailBody += `MATERIALS & ITEMS:\n`;
+                        emailBody += `------------------\n`;
+                        hasItems = true;
+                    }
+                    const qty = itemRows[i].cells[1].querySelector('input').value || '1';
+                    const price = itemRows[i].cells[2].querySelector('input').value || '0';
+                    emailBody += `• ${desc} (Qty: ${qty}, $${price})\n`;
+                }
+            }
+            if (hasItems) emailBody += `\n`;
+            
+            // Add labour summary
+            const labourTable = document.getElementById('labourTable');
+            const labourRows = labourTable.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+            let hasLabour = false;
+            
+            for (let i = 0; i < labourRows.length; i++) {
+                const desc = labourRows[i].cells[0].querySelector('input').value;
+                if (desc.trim()) {
+                    if (!hasLabour) {
+                        emailBody += `LABOUR:\n`;
+                        emailBody += `-------\n`;
+                        hasLabour = true;
+                    }
+                    const hours = labourRows[i].cells[1].querySelector('input').value || '0';
+                    const isOvertime = labourRows[i].cells[2].querySelector('input[type="checkbox"]').checked;
+                    const notes = labourRows[i].cells[3].querySelector('textarea').value;
+                    emailBody += `• ${desc} (${hours} hrs${isOvertime ? ' - Overtime' : ''})`;
+                    if (notes) emailBody += ` - ${notes}`;
+                    emailBody += `\n`;
+                }
+            }
+            if (hasLabour) emailBody += `\n`;
+            
+            // Add provisionals summary
+            const provisionalsTable = document.getElementById('provisionalsTable');
+            const provisionalsRows = provisionalsTable.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+            let hasProvisionals = false;
+            
+            for (let i = 0; i < provisionalsRows.length; i++) {
+                const desc = provisionalsRows[i].cells[0].querySelector('input').value;
+                if (desc.trim()) {
+                    if (!hasProvisionals) {
+                        emailBody += `PROVISIONALS:\n`;
+                        emailBody += `-------------\n`;
+                        hasProvisionals = true;
+                    }
+                    const qty = provisionalsRows[i].cells[1].querySelector('input').value || '1';
+                    const price = provisionalsRows[i].cells[2].querySelector('input').value || '0';
+                    emailBody += `• ${desc} (Qty: ${qty}, $${price})\n`;
+                }
+            }
+            if (hasProvisionals) emailBody += `\n`;
+            
+            // Add optional items summary
+            const optionalTable = document.getElementById('optionalTable');
+            const optionalRows = optionalTable.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+            let hasOptional = false;
+            
+            for (let i = 0; i < optionalRows.length; i++) {
+                const desc = optionalRows[i].cells[0].querySelector('input').value;
+                if (desc.trim()) {
+                    if (!hasOptional) {
+                        emailBody += `OPTIONAL ITEMS:\n`;
+                        emailBody += `---------------\n`;
+                        hasOptional = true;
+                    }
+                    const qty = optionalRows[i].cells[1].querySelector('input').value || '1';
+                    const price = optionalRows[i].cells[2].querySelector('input').value || '0';
+                    emailBody += `• ${desc} (Qty: ${qty}, $${price})\n`;
+                }
+            }
+            if (hasOptional) emailBody += `\n`;
+            
+            if (pricesDiscussed) {
+                emailBody += `NOTES ON LABOUR & EQUIPMENT:\n`;
+                emailBody += `-----------------------------\n`;
+                emailBody += `${pricesDiscussed}\n\n`;
+            }
+            
+            // Add totals
+            emailBody += `ESTIMATE:\n`;
+            emailBody += `---------\n`;
+            if (totalHours !== '0.0') emailBody += `Total Hours: ${totalHours} hrs\n`;
+            emailBody += `Total Cost: $${totalIncGST} (inc. GST)\n\n`;
+            
+            if (additionalNotes) {
+                emailBody += `ADDITIONAL NOTES:\n`;
+                emailBody += `-----------------\n`;
+                emailBody += `${additionalNotes}\n\n`;
+            }
+            
+            emailBody += `\nCINC Whelan Electrical\n\n\n`;
+            
+            // Create email subject
+            let emailSubject = `Scope: ${jobName}`;
+            if (dueDateText) {
+                emailSubject += ` - Due ${dueDateText}`;
+            }
+            
+            // Properly encode the subject and body for mailto
+            const encodedSubject = encodeURIComponent(emailSubject);
+            const encodedBody = encodeURIComponent(emailBody);
+            
+            // Build mailto link with proper formatting
+            const mailtoLink = `mailto:?subject=${encodedSubject}&body=${encodedBody}`;
+            
+            if (navigator.share) {
+                // Try native share first (mobile)
+                navigator.share({
+                    title: emailSubject,
+                    text: emailBody
+                }).catch(() => {
+                    // Fallback to mailto
+                    window.open(mailtoLink) || (window.location.href = mailtoLink);
+                });
+            } else {
+                // Desktop: open email client
+                window.open(mailtoLink) || (window.location.href = mailtoLink);
+            }
+        }
+
     </script>
     
 </body>
