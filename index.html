@@ -731,7 +731,7 @@
         </div>
 
         <button class="action-button" onclick="printQuote()">Print Quote</button>
-        <button class="action-button" onclick="emailPDF()">Email PDF</button>
+        <button class="action-button" onclick="sharePDF()">Share PDF</button>
     </div>
 
     <script>
@@ -1461,6 +1461,59 @@
                         cleanupAfterPrint();
                     }, 1000);
                 }, 100);
+            }
+        }
+
+        async function sharePDF() {
+            if (!navigator.share) {
+                downloadPDF();
+                return;
+            }
+            
+            try {
+                // Update page title
+                updatePageTitle();
+                preprocessTextAreasForPrint();
+                
+                const jobName = document.getElementById('jobName').value || 'Electrical Works Quote';
+                const fileName = generateFileName();
+                
+                // Create share text
+                let shareText = `Scope for ${jobName}`;
+                const dueDate = document.getElementById('quoteDueDate').value;
+                if (dueDate) {
+                    const dateObj = new Date(dueDate);
+                    const formattedDate = dateObj.toLocaleDateString('en-AU');
+                    shareText += ` that needs to be done by ${formattedDate}`;
+                }
+                shareText += `.\n\nRegards,\nCINC Whelan Electrical`;
+                
+                // Unfortunately, browsers can't generate PDF blobs easily
+                // So we'll use the two-step approach with better UX
+                
+                const userChoice = confirm(`Generate PDF to share?\n\n✓ Print dialog will open\n✓ Save as PDF\n✓ Share menu will open automatically\n\nContinue?`);
+                
+                if (userChoice) {
+                    // Step 1: Print dialog
+                    window.print();
+                    
+                    // Step 2: Wait then open share
+                    setTimeout(async () => {
+                        try {
+                            await navigator.share({
+                                title: `Quote: ${jobName}`,
+                                text: shareText + `\n\nPDF file: ${fileName}.pdf`,
+                            });
+                        } catch (shareError) {
+                            console.log('Share cancelled');
+                        }
+                        cleanupAfterPrint();
+                    }, 3000); // Give time to save PDF
+                }
+                
+            } catch (error) {
+                console.error('Share failed:', error);
+                downloadPDF();
             }
         }
     </script>
