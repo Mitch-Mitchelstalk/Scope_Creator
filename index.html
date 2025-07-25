@@ -1473,14 +1473,13 @@
             try {
                 // Update page title
                 updatePageTitle();
-                preprocessTextAreasForPrint();
                 
                 const jobName = document.getElementById('jobName').value || 'Electrical Works Quote';
+                const dueDate = document.getElementById('quoteDueDate').value;
                 const fileName = generateFileName();
                 
                 // Create share text
                 let shareText = `Scope for ${jobName}`;
-                const dueDate = document.getElementById('quoteDueDate').value;
                 if (dueDate) {
                     const dateObj = new Date(dueDate);
                     const formattedDate = dateObj.toLocaleDateString('en-AU');
@@ -1488,12 +1487,13 @@
                 }
                 shareText += `.\n\nRegards,\nCINC Whelan Electrical`;
                 
-                // Unfortunately, browsers can't generate PDF blobs easily
-                // So we'll use the two-step approach with better UX
-                
+                // Ask user first, then only print if they want to continue
                 const userChoice = confirm(`Generate PDF to share?\n\n✓ Print dialog will open\n✓ Save as PDF\n✓ Share menu will open automatically\n\nContinue?`);
                 
                 if (userChoice) {
+                    // Pre-process text areas for printing
+                    preprocessTextAreasForPrint();
+                    
                     // Step 1: Print dialog
                     window.print();
                     
@@ -1508,7 +1508,7 @@
                             console.log('Share cancelled');
                         }
                         cleanupAfterPrint();
-                    }, 3000); // Give time to save PDF
+                    }, 3000);
                 }
                 
             } catch (error) {
