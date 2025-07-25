@@ -1625,6 +1625,46 @@
             }
             if (hasLabour) emailBody += `\n`;
             
+            // Add provisionals summary
+            const provisionalsTable = document.getElementById('provisionalsTable');
+            const provisionalsRows = provisionalsTable.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+            let hasProvisionals = false;
+            
+            for (let i = 0; i < provisionalsRows.length; i++) {
+                const desc = provisionalsRows[i].cells[0].querySelector('input').value;
+                if (desc.trim()) {
+                    if (!hasProvisionals) {
+                        emailBody += `PROVISIONALS:\n`;
+                        emailBody += `-------------\n`;
+                        hasProvisionals = true;
+                    }
+                    const qty = provisionalsRows[i].cells[1].querySelector('input').value || '1';
+                    const price = provisionalsRows[i].cells[2].querySelector('input').value || '0';
+                    emailBody += `• ${desc} (Qty: ${qty}, ${price})\n`;
+                }
+            }
+            if (hasProvisionals) emailBody += `\n`;
+            
+            // Add optional items summary
+            const optionalTable = document.getElementById('optionalTable');
+            const optionalRows = optionalTable.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+            let hasOptional = false;
+            
+            for (let i = 0; i < optionalRows.length; i++) {
+                const desc = optionalRows[i].cells[0].querySelector('input').value;
+                if (desc.trim()) {
+                    if (!hasOptional) {
+                        emailBody += `OPTIONAL ITEMS:\n`;
+                        emailBody += `---------------\n`;
+                        hasOptional = true;
+                    }
+                    const qty = optionalRows[i].cells[1].querySelector('input').value || '1';
+                    const price = optionalRows[i].cells[2].querySelector('input').value || '0';
+                    emailBody += `• ${desc} (Qty: ${qty}, ${price})\n`;
+                }
+            }
+            if (hasOptional) emailBody += `\n`;
+            
             if (pricesDiscussed) {
                 emailBody += `NOTES ON LABOUR & EQUIPMENT:\n`;
                 emailBody += `-----------------------------\n`;
@@ -1654,7 +1694,7 @@
 
             console.log('Email Subject:', emailSubject);
             alert('Subject will be: ' + emailSubject);
-
+            
             // Open email
             const mailtoLink = `mailto:?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
             
@@ -1672,6 +1712,7 @@
                 window.open(mailtoLink) || (window.location.href = mailtoLink);
             }
         }
+        
     </script>
     
 </body>
