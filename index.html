@@ -1601,7 +1601,7 @@ function shareScope() {
             const encodedBody = encodeURIComponent(emailBody);
             
             // Open email
-            const mailtoLink = `mailto:?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+            const mailtoLink = `mailto:?subject=${encodedSubject}&body=${encodedBody}`;
             
             if (navigator.share) {
                 // Try native share first (mobile)
