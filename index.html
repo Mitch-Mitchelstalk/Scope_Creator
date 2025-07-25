@@ -531,8 +531,8 @@
                     <tbody>
                         <tr>
                             <td><input type="text" class="input-field" placeholder="Item description"></td>
-                            <td><input type="number" class="input-field" placeholder="1" min="0" onchange="calculateItemTotal(this)"></td>
-                            <td><input type="number" class="input-field" step="0.01" placeholder="0.00" onchange="calculateItemTotal(this)"></td>
+                            <td><input type="number" class="input-field" placeholder="1" min="0" oninput="calculateItemTotal(this)" onchange="calculateItemTotal(this)"></td>
+                            <td><input type="number" class="input-field" step="0.01" placeholder="0.00" oninput="calculateItemTotal(this)" onchange="calculateItemTotal(this)"></td>
                             <td style="text-align: center;"><input type="checkbox" class="checkbox-field"></td>
                             <td style="text-align: center;"><input type="checkbox" class="checkbox-field"></td>
                             <td><input type="number" class="readonly-field" step="0.01" placeholder="0.00" readonly></td>
@@ -553,11 +553,11 @@
                 <div class="two-column" style="margin-bottom: 15px;">
                     <div class="field-group">
                         <label>Normal Hour Rate ($):</label>
-                        <input type="number" class="input-field" id="normalRate" value="75" step="0.01" onchange="calculateLabourTotals()" placeholder="75.00">
+                        <input type="number" class="input-field" id="normalRate" value="75" step="0.01" oninput="calculateLabourTotals()" onchange="calculateLabourTotals()" placeholder="75.00">
                     </div>
                     <div class="field-group">
                         <label>Overtime Hour Rate ($):</label>
-                        <input type="number" class="input-field" id="overtimeRate" value="150" step="0.01" onchange="calculateLabourTotals()" placeholder="150.00">
+                        <input type="number" class="input-field" id="overtimeRate" value="150" step="0.01" oninput="calculateLabourTotals()" onchange="calculateLabourTotals()" placeholder="150.00">
                     </div>
                 </div>
                 <table id="labourTable">
@@ -572,7 +572,7 @@
                     <tbody>
                         <tr>
                             <td><input type="text" class="input-field" placeholder="Labour description"></td>
-                            <td><input type="number" class="input-field" step="0.5" placeholder="0.0" onchange="calculateLabourTotals()"></td>
+                            <td><input type="number" class="input-field" step="0.5" placeholder="0.0" oninput="calculateLabourTotals()" onchange="calculateLabourTotals()"></td>
                             <td style="text-align: center;">
                                 <input type="checkbox" class="checkbox-field" onchange="calculateLabourTotals()">
                             </td>
@@ -622,8 +622,8 @@
                     <tbody>
                         <tr>
                             <td><input type="text" class="input-field" placeholder="Provisional item description"></td>
-                            <td><input type="number" class="input-field" placeholder="1" min="0" onchange="calculateProvisionalsTotal(this)"></td>
-                            <td><input type="number" class="input-field" step="0.01" placeholder="0.00" onchange="calculateProvisionalsTotal(this)"></td>
+                            <td><input type="number" class="input-field" placeholder="1" min="0" oninput="calculateProvisionalsTotal(this)" onchange="calculateProvisionalsTotal(this)"></td>
+                            <td><input type="number" class="input-field" step="0.01" placeholder="0.00" oninput="calculateProvisionalsTotal(this)" onchange="calculateProvisionalsTotal(this)"></td>
                             <td style="text-align: center;"><input type="checkbox" class="checkbox-field"></td>
                             <td style="text-align: center;"><input type="checkbox" class="checkbox-field"></td>
                             <td><input type="number" class="readonly-field" step="0.01" placeholder="0.00" readonly></td>
@@ -655,8 +655,8 @@
                     <tbody>
                         <tr>
                             <td><input type="text" class="input-field" placeholder="Optional item description"></td>
-                            <td><input type="number" class="input-field" placeholder="1" min="0" onchange="calculateOptionalTotal(this)"></td>
-                            <td><input type="number" class="input-field" step="0.01" placeholder="0.00" onchange="calculateOptionalTotal(this)"></td>
+                            <td><input type="number" class="input-field" placeholder="1" min="0" oninput="calculateOptionalTotal(this)" onchange="calculateOptionalTotal(this)"></td>
+                            <td><input type="number" class="input-field" step="0.01" placeholder="0.00" oninput="calculateOptionalTotal(this)" onchange="calculateOptionalTotal(this)"></td>
                             <td style="text-align: center;"><input type="checkbox" class="checkbox-field"></td>
                             <td style="text-align: center;"><input type="checkbox" class="checkbox-field"></td>
                             <td><input type="number" class="readonly-field" step="0.01" placeholder="0.00" readonly></td>
@@ -740,8 +740,8 @@
             const newRow = table.insertRow();
             newRow.innerHTML = `
                 <td><input type="text" class="input-field" placeholder="Item description"></td>
-                <td><input type="number" class="input-field" placeholder="1" min="0" onchange="calculateItemTotal(this)"></td>
-                <td><input type="number" class="input-field" step="0.01" placeholder="0.00" onchange="calculateItemTotal(this)"></td>
+                <td><input type="number" class="input-field" placeholder="1" min="0" oninput="calculateItemTotal(this)" onchange="calculateItemTotal(this)"></td>
+                <td><input type="number" class="input-field" step="0.01" placeholder="0.00" oninput="calculateItemTotal(this)" onchange="calculateItemTotal(this)"></td>
                 <td style="text-align: center;"><input type="checkbox" class="checkbox-field"></td>
                 <td style="text-align: center;"><input type="checkbox" class="checkbox-field"></td>
                 <td><input type="number" class="readonly-field" step="0.01" placeholder="0.00" readonly></td>
@@ -753,7 +753,7 @@
             const newRow = table.insertRow();
             newRow.innerHTML = `
                 <td><input type="text" class="input-field" placeholder="Labour description"></td>
-                <td><input type="number" class="input-field" step="0.5" placeholder="0.0" onchange="calculateLabourTotals()"></td>
+                <td><input type="number" class="input-field" step="0.5" placeholder="0.0" oninput="calculateLabourTotals()" onchange="calculateLabourTotals()"></td>
                 <td style="text-align: center;">
                     <input type="checkbox" class="checkbox-field" onchange="calculateLabourTotals()">
                 </td>
@@ -766,8 +766,8 @@
             const newRow = table.insertRow();
             newRow.innerHTML = `
                 <td><input type="text" class="input-field" placeholder="Provisional item description"></td>
-                <td><input type="number" class="input-field" placeholder="1" min="0" onchange="calculateProvisionalsTotal(this)"></td>
-                <td><input type="number" class="input-field" step="0.01" placeholder="0.00" onchange="calculateProvisionalsTotal(this)"></td>
+                <td><input type="number" class="input-field" placeholder="1" min="0" oninput="calculateProvisionalsTotal(this)" onchange="calculateProvisionalsTotal(this)"></td>
+                <td><input type="number" class="input-field" step="0.01" placeholder="0.00" oninput="calculateProvisionalsTotal(this)" onchange="calculateProvisionalsTotal(this)"></td>
                 <td style="text-align: center;"><input type="checkbox" class="checkbox-field"></td>
                 <td style="text-align: center;"><input type="checkbox" class="checkbox-field"></td>
                 <td><input type="number" class="readonly-field" step="0.01" placeholder="0.00" readonly></td>
@@ -779,8 +779,8 @@
             const newRow = table.insertRow();
             newRow.innerHTML = `
                 <td><input type="text" class="input-field" placeholder="Optional item description"></td>
-                <td><input type="number" class="input-field" placeholder="1" min="0" onchange="calculateOptionalTotal(this)"></td>
-                <td><input type="number" class="input-field" step="0.01" placeholder="0.00" onchange="calculateOptionalTotal(this)"></td>
+                <td><input type="number" class="input-field" placeholder="1" min="0" oninput="calculateOptionalTotal(this)" onchange="calculateOptionalTotal(this)"></td>
+                <td><input type="number" class="input-field" step="0.01" placeholder="0.00" oninput="calculateOptionalTotal(this)" onchange="calculateOptionalTotal(this)"></td>
                 <td style="text-align: center;"><input type="checkbox" class="checkbox-field"></td>
                 <td style="text-align: center;"><input type="checkbox" class="checkbox-field"></td>
                 <td><input type="number" class="readonly-field" step="0.01" placeholder="0.00" readonly></td>
@@ -1369,6 +1369,14 @@
                         checkbox.checked = rowData[`col_${j}_checkbox`];
                     } else if (input && rowData[`col_${j}_input`] !== undefined) {
                         input.value = rowData[`col_${j}_input`];
+                        
+                        // Trigger calculation for item/provisional/optional tables
+                        if ((tableId === 'itemsTable' || tableId === 'provisionalsTable' || tableId === 'optionalTable') && 
+                            (j === 1 || j === 2)) { // qty or price columns
+                            if (tableId === 'itemsTable') calculateItemTotal(input);
+                            else if (tableId === 'provisionalsTable') calculateProvisionalsTotal(input);
+                            else if (tableId === 'optionalTable') calculateOptionalTotal(input);
+                        }
                     } else if (textarea && rowData[`col_${j}_textarea`] !== undefined) {
                         textarea.value = rowData[`col_${j}_textarea`];
                         autoExpand(textarea);
