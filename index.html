@@ -731,6 +731,7 @@
         </div>
 
         <button class="action-button" onclick="printQuote()">Print Quote</button>
+        <button class="action-button" onclick="emailPDF()">Email PDF</button>
     </div>
 
     <script>
@@ -1307,22 +1308,20 @@
             const data = [];
             
             for (let i = 0; i < rows.length; i++) {
-                const rowData = [];
+                const rowData = {};
                 const cells = rows[i].getElementsByTagName('td');
                 
                 for (let j = 0; j < cells.length; j++) {
-                    const input = cells[j].querySelector('input[type="text"], input[type="number"]');
+                    const input = cells[j].querySelector('input[type="text"], input[type="number"]:not(.readonly-field)');
                     const checkbox = cells[j].querySelector('input[type="checkbox"]');
                     const textarea = cells[j].querySelector('textarea');
                     
                     if (checkbox) {
-                        rowData.push(checkbox.checked);
+                        rowData[`col_${j}_checkbox`] = checkbox.checked;
                     } else if (input) {
-                        rowData.push(input.value);
+                        rowData[`col_${j}_input`] = input.value;
                     } else if (textarea) {
-                        rowData.push(textarea.value);
-                    } else {
-                        rowData.push('');
+                        rowData[`col_${j}_textarea`] = textarea.value;
                     }
                 }
                 data.push(rowData);
@@ -1345,7 +1344,7 @@
                 if (i === 0) {
                     row = tbody.rows[0];
                 } else {
-                    // Add new row
+                    // Add new row based on table type
                     if (tableId === 'itemsTable') addItemRow();
                     else if (tableId === 'labourTable') addLabourRow();
                     else if (tableId === 'provisionalsTable') addProvisionalsRow();
@@ -1354,21 +1353,32 @@
                 }
                 
                 const cells = row.getElementsByTagName('td');
-                for (let j = 0; j < data[i].length && j < cells.length; j++) {
-                    const input = cells[j].querySelector('input[type="text"], input[type="number"]');
+                const rowData = data[i];
+                
+                for (let j = 0; j < cells.length; j++) {
+                    const input = cells[j].querySelector('input[type="text"], input[type="number"]:not(.readonly-field)');
                     const checkbox = cells[j].querySelector('input[type="checkbox"]');
                     const textarea = cells[j].querySelector('textarea');
                     
-                    if (checkbox) {
-                        checkbox.checked = data[i][j];
-                    } else if (input) {
-                        input.value = data[i][j];
-                    } else if (textarea) {
-                        textarea.value = data[i][j];
+                    if (checkbox && rowData[`col_${j}_checkbox`] !== undefined) {
+                        checkbox.checked = rowData[`col_${j}_checkbox`];
+                    } else if (input && rowData[`col_${j}_input`] !== undefined) {
+                        input.value = rowData[`col_${j}_input`];
+                    } else if (textarea && rowData[`col_${j}_textarea`] !== undefined) {
+                        textarea.value = rowData[`col_${j}_textarea`];
                         autoExpand(textarea);
                     }
                 }
             }
+            
+            // Force recalculations after loading all data
+            setTimeout(() => {
+                calculateItemsSubtotal();
+                calculateLabourTotals();
+                calculateProvisionalsSubtotal();
+                calculateOptionalSubtotal();
+                calculateTotals();
+            }, 50);
         }
 
         // Initialise calculations and add event listeners for dynamic title updates
@@ -1400,6 +1410,59 @@
         document.querySelectorAll('textarea').forEach(textarea => {
             textarea.addEventListener('input', () => resizeTextarea(textarea));
         });
+
+        function emailPDF() {
+            // Update page title for PDF filename
+            updatePageTitle();
+            
+            // Pre-process text areas for printing
+            preprocessTextAreasForPrint();
+            
+            // Generate email content
+            const jobName = document.getElementById('jobName').value || 'Electrical Works Quote';
+            const dueDate = document.getElementById('quoteDueDate').value;
+            
+            // Create email subject
+            let emailSubject = jobName;
+            if (dueDate) {
+                const dateObj = new Date(dueDate);
+                const formattedDate = dateObj.toLocaleDateString('en-AU');
+                emailSubject += ` - ${formattedDate}`;
+            }
+            
+            // Create email body
+            let emailBody = `Scope for ${jobName}`;
+            if (dueDate) {
+                const dateObj = new Date(dueDate);
+                const formattedDate = dateObj.toLocaleDateString('en-AU');
+                emailBody += ` that needs to be done by ${formattedDate}`;
+            }
+            emailBody += `.\n\nRegards,\nCINC Whelan Electrical`;
+            
+            // Device-specific handling
+            if (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                // Mobile: Print dialog first, then mail
+                alert('Save the quote as PDF from the print dialog, then attach to your email.');
+                setTimeout(() => {
+                    window.print();
+                    setTimeout(() => {
+                        const mailtoLink = `mailto:?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+                        window.location.href = mailtoLink;
+                        cleanupAfterPrint();
+                    }, 2000);
+                }, 100);
+            } else {
+                // Desktop: Print dialog then mail client
+                setTimeout(() => {
+                    window.print();
+                    setTimeout(() => {
+                        const mailtoLink = `mailto:?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+                        window.open(mailtoLink) || (window.location.href = mailtoLink);
+                        cleanupAfterPrint();
+                    }, 1000);
+                }, 100);
+            }
+        }
     </script>
     
 </body>
