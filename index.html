@@ -531,8 +531,8 @@
                     <tbody>
                         <tr>
                             <td><input type="text" class="input-field" placeholder="Item description"></td>
-                            <td><input type="number" class="input-field" placeholder="1" min="0" onchange="calculateItemTotal(this)"></td>
-                            <td><input type="number" class="input-field" step="0.01" placeholder="0.00" onchange="calculateItemTotal(this)"></td>
+                            <td><input type="number" class="input-field" placeholder="1" min="0" oninput="calculateItemTotal(this)" onchange="calculateItemTotal(this)"></td>
+                            <td><input type="number" class="input-field" step="0.01" placeholder="0.00" oninput="calculateItemTotal(this)" onchange="calculateItemTotal(this)"></td>
                             <td style="text-align: center;"><input type="checkbox" class="checkbox-field"></td>
                             <td style="text-align: center;"><input type="checkbox" class="checkbox-field"></td>
                             <td><input type="number" class="readonly-field" step="0.01" placeholder="0.00" readonly></td>
@@ -553,11 +553,11 @@
                 <div class="two-column" style="margin-bottom: 15px;">
                     <div class="field-group">
                         <label>Normal Hour Rate ($):</label>
-                        <input type="number" class="input-field" id="normalRate" value="75" step="0.01" onchange="calculateLabourTotals()" placeholder="75.00">
+                        <input type="number" class="input-field" id="normalRate" value="75" step="0.01" oninput="calculateLabourTotals()" onchange="calculateLabourTotals()" placeholder="75.00">
                     </div>
                     <div class="field-group">
                         <label>Overtime Hour Rate ($):</label>
-                        <input type="number" class="input-field" id="overtimeRate" value="150" step="0.01" onchange="calculateLabourTotals()" placeholder="150.00">
+                        <input type="number" class="input-field" id="overtimeRate" value="150" step="0.01" oninput="calculateLabourTotals()" onchange="calculateLabourTotals()" placeholder="150.00">
                     </div>
                 </div>
                 <table id="labourTable">
@@ -572,7 +572,7 @@
                     <tbody>
                         <tr>
                             <td><input type="text" class="input-field" placeholder="Labour description"></td>
-                            <td><input type="number" class="input-field" step="0.5" placeholder="0.0" onchange="calculateLabourTotals()"></td>
+                            <td><input type="number" class="input-field" step="0.5" placeholder="0.0" oninput="calculateLabourTotals()" onchange="calculateLabourTotals()"></td>
                             <td style="text-align: center;">
                                 <input type="checkbox" class="checkbox-field" onchange="calculateLabourTotals()">
                             </td>
@@ -622,8 +622,8 @@
                     <tbody>
                         <tr>
                             <td><input type="text" class="input-field" placeholder="Provisional item description"></td>
-                            <td><input type="number" class="input-field" placeholder="1" min="0" onchange="calculateProvisionalsTotal(this)"></td>
-                            <td><input type="number" class="input-field" step="0.01" placeholder="0.00" onchange="calculateProvisionalsTotal(this)"></td>
+                            <td><input type="number" class="input-field" placeholder="1" min="0" oninput="calculateProvisionalsTotal(this)" onchange="calculateProvisionalsTotal(this)"></td>
+                            <td><input type="number" class="input-field" step="0.01" placeholder="0.00" oninput="calculateProvisionalsTotal(this)" onchange="calculateProvisionalsTotal(this)"></td>
                             <td style="text-align: center;"><input type="checkbox" class="checkbox-field"></td>
                             <td style="text-align: center;"><input type="checkbox" class="checkbox-field"></td>
                             <td><input type="number" class="readonly-field" step="0.01" placeholder="0.00" readonly></td>
@@ -655,8 +655,8 @@
                     <tbody>
                         <tr>
                             <td><input type="text" class="input-field" placeholder="Optional item description"></td>
-                            <td><input type="number" class="input-field" placeholder="1" min="0" onchange="calculateOptionalTotal(this)"></td>
-                            <td><input type="number" class="input-field" step="0.01" placeholder="0.00" onchange="calculateOptionalTotal(this)"></td>
+                            <td><input type="number" class="input-field" placeholder="1" min="0" oninput="calculateOptionalTotal(this)" onchange="calculateOptionalTotal(this)"></td>
+                            <td><input type="number" class="input-field" step="0.01" placeholder="0.00" oninput="calculateOptionalTotal(this)" onchange="calculateOptionalTotal(this)"></td>
                             <td style="text-align: center;"><input type="checkbox" class="checkbox-field"></td>
                             <td style="text-align: center;"><input type="checkbox" class="checkbox-field"></td>
                             <td><input type="number" class="readonly-field" step="0.01" placeholder="0.00" readonly></td>
@@ -732,7 +732,6 @@
 
         <button class="action-button" onclick="printQuote()">Print Quote</button>
         <button class="action-button" onclick="shareScope()">Share Scope</button>
-
     </div>
 
     <script>
@@ -741,8 +740,8 @@
             const newRow = table.insertRow();
             newRow.innerHTML = `
                 <td><input type="text" class="input-field" placeholder="Item description"></td>
-                <td><input type="number" class="input-field" placeholder="1" min="0" onchange="calculateItemTotal(this)"></td>
-                <td><input type="number" class="input-field" step="0.01" placeholder="0.00" onchange="calculateItemTotal(this)"></td>
+                <td><input type="number" class="input-field" placeholder="1" min="0" oninput="calculateItemTotal(this)" onchange="calculateItemTotal(this)"></td>
+                <td><input type="number" class="input-field" step="0.01" placeholder="0.00" oninput="calculateItemTotal(this)" onchange="calculateItemTotal(this)"></td>
                 <td style="text-align: center;"><input type="checkbox" class="checkbox-field"></td>
                 <td style="text-align: center;"><input type="checkbox" class="checkbox-field"></td>
                 <td><input type="number" class="readonly-field" step="0.01" placeholder="0.00" readonly></td>
@@ -754,7 +753,7 @@
             const newRow = table.insertRow();
             newRow.innerHTML = `
                 <td><input type="text" class="input-field" placeholder="Labour description"></td>
-                <td><input type="number" class="input-field" step="0.5" placeholder="0.0" onchange="calculateLabourTotals()"></td>
+                <td><input type="number" class="input-field" step="0.5" placeholder="0.0" oninput="calculateLabourTotals()" onchange="calculateLabourTotals()"></td>
                 <td style="text-align: center;">
                     <input type="checkbox" class="checkbox-field" onchange="calculateLabourTotals()">
                 </td>
@@ -767,8 +766,8 @@
             const newRow = table.insertRow();
             newRow.innerHTML = `
                 <td><input type="text" class="input-field" placeholder="Provisional item description"></td>
-                <td><input type="number" class="input-field" placeholder="1" min="0" onchange="calculateProvisionalsTotal(this)"></td>
-                <td><input type="number" class="input-field" step="0.01" placeholder="0.00" onchange="calculateProvisionalsTotal(this)"></td>
+                <td><input type="number" class="input-field" placeholder="1" min="0" oninput="calculateProvisionalsTotal(this)" onchange="calculateProvisionalsTotal(this)"></td>
+                <td><input type="number" class="input-field" step="0.01" placeholder="0.00" oninput="calculateProvisionalsTotal(this)" onchange="calculateProvisionalsTotal(this)"></td>
                 <td style="text-align: center;"><input type="checkbox" class="checkbox-field"></td>
                 <td style="text-align: center;"><input type="checkbox" class="checkbox-field"></td>
                 <td><input type="number" class="readonly-field" step="0.01" placeholder="0.00" readonly></td>
@@ -780,8 +779,8 @@
             const newRow = table.insertRow();
             newRow.innerHTML = `
                 <td><input type="text" class="input-field" placeholder="Optional item description"></td>
-                <td><input type="number" class="input-field" placeholder="1" min="0" onchange="calculateOptionalTotal(this)"></td>
-                <td><input type="number" class="input-field" step="0.01" placeholder="0.00" onchange="calculateOptionalTotal(this)"></td>
+                <td><input type="number" class="input-field" placeholder="1" min="0" oninput="calculateOptionalTotal(this)" onchange="calculateOptionalTotal(this)"></td>
+                <td><input type="number" class="input-field" step="0.01" placeholder="0.00" oninput="calculateOptionalTotal(this)" onchange="calculateOptionalTotal(this)"></td>
                 <td style="text-align: center;"><input type="checkbox" class="checkbox-field"></td>
                 <td style="text-align: center;"><input type="checkbox" class="checkbox-field"></td>
                 <td><input type="number" class="readonly-field" step="0.01" placeholder="0.00" readonly></td>
@@ -790,10 +789,15 @@
 
         function calculateItemTotal(input) {
             const row = input.closest('tr');
-            const qty = parseFloat(row.cells[1].querySelector('input').value) || 0;
-            const price = parseFloat(row.cells[2].querySelector('input').value) || 0;
+            const qtyInput = row.cells[1].querySelector('input');
+            const priceInput = row.cells[2].querySelector('input');
+            const totalInput = row.cells[5].querySelector('input');
+            
+            const qty = parseFloat(qtyInput.value) || 0;
+            const price = parseFloat(priceInput.value) || 0;
             const total = qty * price;
-            row.cells[5].querySelector('input').value = total.toFixed(2);
+            
+            totalInput.value = total.toFixed(2);
             calculateItemsSubtotal();
             calculateTotals();
         }
@@ -1365,6 +1369,14 @@
                         checkbox.checked = rowData[`col_${j}_checkbox`];
                     } else if (input && rowData[`col_${j}_input`] !== undefined) {
                         input.value = rowData[`col_${j}_input`];
+                        
+                        // Trigger calculation for item/provisional/optional tables
+                        if ((tableId === 'itemsTable' || tableId === 'provisionalsTable' || tableId === 'optionalTable') && 
+                            (j === 1 || j === 2)) { // qty or price columns
+                            if (tableId === 'itemsTable') calculateItemTotal(input);
+                            else if (tableId === 'provisionalsTable') calculateProvisionalsTotal(input);
+                            else if (tableId === 'optionalTable') calculateOptionalTotal(input);
+                        }
                     } else if (textarea && rowData[`col_${j}_textarea`] !== undefined) {
                         textarea.value = rowData[`col_${j}_textarea`];
                         autoExpand(textarea);
@@ -1412,103 +1424,7 @@
             textarea.addEventListener('input', () => resizeTextarea(textarea));
         });
 
-        function emailPDF() {
-            // Update page title for PDF filename
-            updatePageTitle();
-            
-            // Pre-process text areas for printing
-            preprocessTextAreasForPrint();
-            
-            // Generate email content
-            const jobName = document.getElementById('jobName').value || 'Electrical Works Quote';
-            const dueDate = document.getElementById('quoteDueDate').value;
-            
-            // Create email subject
-            let emailSubject = jobName;
-            if (dueDate) {
-                const dateObj = new Date(dueDate);
-                const formattedDate = dateObj.toLocaleDateString('en-AU');
-                emailSubject += ` - ${formattedDate}`;
-            }
-            
-            // Create email body
-            let emailBody = `Scope for ${jobName}`;
-            if (dueDate) {
-                const dateObj = new Date(dueDate);
-                const formattedDate = dateObj.toLocaleDateString('en-AU');
-                emailBody += ` that needs to be done by ${formattedDate}`;
-            }
-            emailBody += `.\n\nRegards,\nCINC Whelan Electrical`;
-            
-            // Device-specific handling
-            if (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-                // Mobile: Print dialog first, then mail
-                alert('Save the quote as PDF from the print dialog, then attach to your email.');
-                setTimeout(() => {
-                    window.print();
-                    setTimeout(() => {
-                        const mailtoLink = `mailto:?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
-                        window.location.href = mailtoLink;
-                        cleanupAfterPrint();
-                    }, 2000);
-                }, 100);
-            } else {
-                // Desktop: Print dialog then mail client
-                setTimeout(() => {
-                    window.print();
-                    setTimeout(() => {
-                        const mailtoLink = `mailto:?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
-                        window.open(mailtoLink) || (window.location.href = mailtoLink);
-                        cleanupAfterPrint();
-                    }, 1000);
-                }, 100);
-            }
-        }
-
-        async function sharePDF() {
-            // Update page title for PDF filename
-            updatePageTitle();
-            
-            const jobName = document.getElementById('jobName').value || 'Electrical Works Quote';
-            const dueDate = document.getElementById('quoteDueDate').value;
-            const fileName = generateFileName();
-            
-            // Create share text
-            let shareText = `Scope for ${jobName}`;
-            if (dueDate) {
-                const dateObj = new Date(dueDate);
-                const formattedDate = dateObj.toLocaleDateString('en-AU');
-                shareText += ` that needs to be done by ${formattedDate}`;
-            }
-            shareText += `.\n\nRegards,\nCINC Whelan Electrical`;
-            
-            // Pre-process text areas for printing
-            preprocessTextAreasForPrint();
-            
-            // Generate PDF first
-            window.print();
-            
-            // Then open share dialog after a delay
-            setTimeout(async () => {
-                if (navigator.share) {
-                    try {
-                        await navigator.share({
-                            title: `Quote: ${jobName}`,
-                            text: shareText + `\n\nPDF file: ${fileName}.pdf`,
-                        });
-                    } catch (shareError) {
-                        console.log('Share cancelled');
-                    }
-                } else {
-                    // Fallback for browsers without share API
-                    const mailtoLink = `mailto:?subject=${encodeURIComponent(`Quote: ${jobName}`)}&body=${encodeURIComponent(shareText)}`;
-                    window.open(mailtoLink) || (window.location.href = mailtoLink);
-                }
-                cleanupAfterPrint();
-            }, 2000);
-        }
-
-        function shareScope() {
+function shareScope() {
             const jobName = document.getElementById('jobName').value || 'Electrical Works Quote';
             const contactPerson = document.getElementById('contactPerson').value;
             const phone = document.getElementById('phone').value;
@@ -1691,12 +1607,12 @@
                 emailSubject += ` - Due ${dueDateText}`;
             }
             
-
-            // console.log('Email Subject:', emailSubject);
-            // alert('Subject will be: ' + emailSubject);
+            // Properly encode the subject and body for mailto
+            const encodedSubject = encodeURIComponent(emailSubject);
+            const encodedBody = encodeURIComponent(emailBody);
             
-            // Open email
-            const mailtoLink = `mailto:?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+            // Build mailto link with proper formatting
+            const mailtoLink = `mailto:?subject=${encodedSubject}&body=${encodedBody}`;
             
             if (navigator.share) {
                 // Try native share first (mobile)
@@ -1712,7 +1628,7 @@
                 window.open(mailtoLink) || (window.location.href = mailtoLink);
             }
         }
-        
+
     </script>
     
 </body>
