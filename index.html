@@ -1597,7 +1597,7 @@
                     }
                     const qty = itemRows[i].cells[1].querySelector('input').value || '1';
                     const price = itemRows[i].cells[2].querySelector('input').value || '0';
-                    emailBody += `• ${desc} (Qty: ${qty}, ${price})\n`;
+                    emailBody += `• ${desc} (Qty: ${qty}, $${price})\n`;
                 }
             }
             if (hasItems) emailBody += `\n`;
@@ -1640,7 +1640,7 @@
                     }
                     const qty = provisionalsRows[i].cells[1].querySelector('input').value || '1';
                     const price = provisionalsRows[i].cells[2].querySelector('input').value || '0';
-                    emailBody += `• ${desc} (Qty: ${qty}, ${price})\n`;
+                    emailBody += `• ${desc} (Qty: ${qty}, $${price})\n`;
                 }
             }
             if (hasProvisionals) emailBody += `\n`;
@@ -1660,7 +1660,7 @@
                     }
                     const qty = optionalRows[i].cells[1].querySelector('input').value || '1';
                     const price = optionalRows[i].cells[2].querySelector('input').value || '0';
-                    emailBody += `• ${desc} (Qty: ${qty}, ${price})\n`;
+                    emailBody += `• ${desc} (Qty: ${qty}, $${price})\n`;
                 }
             }
             if (hasOptional) emailBody += `\n`;
@@ -1675,7 +1675,7 @@
             emailBody += `ESTIMATE:\n`;
             emailBody += `---------\n`;
             if (totalHours !== '0.0') emailBody += `Total Hours: ${totalHours} hrs\n`;
-            emailBody += `Total Cost: ${totalIncGST} (inc. GST)\n\n`;
+            emailBody += `Total Cost: $${totalIncGST} (inc. GST)\n\n`;
             
             if (additionalNotes) {
                 emailBody += `ADDITIONAL NOTES:\n`;
@@ -1683,7 +1683,7 @@
                 emailBody += `${additionalNotes}\n\n`;
             }
             
-            emailBody += `Regards,\nCINC Whelan Electrical\n`;
+            emailBody += `\nCINC Whelan Electrical\n\n\n`;
             
             // Create email subject
             let emailSubject = `Scope: ${jobName}`;
@@ -1692,8 +1692,8 @@
             }
             
 
-            console.log('Email Subject:', emailSubject);
-            alert('Subject will be: ' + emailSubject);
+            // console.log('Email Subject:', emailSubject);
+            // alert('Subject will be: ' + emailSubject);
             
             // Open email
             const mailtoLink = `mailto:?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
