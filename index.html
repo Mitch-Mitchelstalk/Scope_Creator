@@ -1595,8 +1595,10 @@ function shareScope() {
             }
             
 
-            // console.log('Email Subject:', emailSubject);
-            // alert('Subject will be: ' + emailSubject);
+            // Properly encode the subject and body for mailto
+            // Use a more robust encoding approach for Mac compatibility
+            const encodedSubject = encodeURIComponent(emailSubject).replace(/%20/g, '+');
+            const encodedBody = encodeURIComponent(emailBody);
             
             // Open email
             const mailtoLink = `mailto:?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
