@@ -731,7 +731,8 @@
         </div>
 
         <button class="action-button" onclick="printQuote()">Print Quote</button>
-        <button class="action-button" onclick="sharePDF()">Share PDF</button>
+        <button class="action-button" onclick="shareScope()">Share Scope</button>
+
     </div>
 
     <script>
@@ -1465,55 +1466,210 @@
         }
 
         async function sharePDF() {
-            if (!navigator.share) {
-                downloadPDF();
-                return;
+            // Update page title for PDF filename
+            updatePageTitle();
+            
+            const jobName = document.getElementById('jobName').value || 'Electrical Works Quote';
+            const dueDate = document.getElementById('quoteDueDate').value;
+            const fileName = generateFileName();
+            
+            // Create share text
+            let shareText = `Scope for ${jobName}`;
+            if (dueDate) {
+                const dateObj = new Date(dueDate);
+                const formattedDate = dateObj.toLocaleDateString('en-AU');
+                shareText += ` that needs to be done by ${formattedDate}`;
+            }
+            shareText += `.\n\nRegards,\nCINC Whelan Electrical`;
+            
+            // Pre-process text areas for printing
+            preprocessTextAreasForPrint();
+            
+            // Generate PDF first
+            window.print();
+            
+            // Then open share dialog after a delay
+            setTimeout(async () => {
+                if (navigator.share) {
+                    try {
+                        await navigator.share({
+                            title: `Quote: ${jobName}`,
+                            text: shareText + `\n\nPDF file: ${fileName}.pdf`,
+                        });
+                    } catch (shareError) {
+                        console.log('Share cancelled');
+                    }
+                } else {
+                    // Fallback for browsers without share API
+                    const mailtoLink = `mailto:?subject=${encodeURIComponent(`Quote: ${jobName}`)}&body=${encodeURIComponent(shareText)}`;
+                    window.open(mailtoLink) || (window.location.href = mailtoLink);
+                }
+                cleanupAfterPrint();
+            }, 2000);
+        }
+
+        function shareScope() {
+            const jobName = document.getElementById('jobName').value || 'Electrical Works Quote';
+            const contactPerson = document.getElementById('contactPerson').value;
+            const phone = document.getElementById('phone').value;
+            const email = document.getElementById('email').value;
+            const quoteDueDate = document.getElementById('quoteDueDate').value;
+            const businessName = document.getElementById('businessName').value;
+            const scopeOfWork = document.getElementById('scopeOfWork').value;
+            const pricesDiscussed = document.getElementById('pricesDiscussed').value;
+            const additionalNotes = document.getElementById('additionalNotes').value;
+            
+            // Format date
+            let dueDateText = '';
+            if (quoteDueDate) {
+                const dateObj = new Date(quoteDueDate);
+                dueDateText = dateObj.toLocaleDateString('en-AU');
             }
             
-            try {
-                // Update page title
-                updatePageTitle();
-                
-                const jobName = document.getElementById('jobName').value || 'Electrical Works Quote';
-                const dueDate = document.getElementById('quoteDueDate').value;
-                const fileName = generateFileName();
-                
-                // Create share text
-                let shareText = `Scope for ${jobName}`;
-                if (dueDate) {
-                    const dateObj = new Date(dueDate);
-                    const formattedDate = dateObj.toLocaleDateString('en-AU');
-                    shareText += ` that needs to be done by ${formattedDate}`;
+            // Build address strings
+            let businessAddress = '';
+            const businessStreet = document.getElementById('businessStreet').value;
+            const businessSuburb = document.getElementById('businessSuburb').value;
+            const businessState = document.getElementById('businessState').value;
+            const businessPostcode = document.getElementById('businessPostcode').value;
+            
+            if (businessStreet || businessSuburb || businessState || businessPostcode) {
+                businessAddress = [businessStreet, businessSuburb, businessState, businessPostcode].filter(Boolean).join(', ');
+            }
+            
+            let siteAddress = '';
+            const siteStreet = document.getElementById('siteStreet').value;
+            const siteSuburb = document.getElementById('siteSuburb').value;
+            const siteState = document.getElementById('siteState').value;
+            const sitePostcode = document.getElementById('sitePostcode').value;
+            
+            if (siteStreet || siteSuburb || siteState || sitePostcode) {
+                siteAddress = [siteStreet, siteSuburb, siteState, sitePostcode].filter(Boolean).join(', ');
+            }
+            
+            // Get totals
+            const totalIncGST = document.getElementById('totalIncGST').textContent;
+            const totalHours = document.getElementById('finalTotalHours').textContent;
+            
+            // Build email content
+            let emailBody = `CINC WHELAN ELECTRICAL - SCOPE OF WORK\n`;
+            emailBody += `=======================================\n\n`;
+            
+            if (jobName) emailBody += `JOB: ${jobName}\n`;
+            if (dueDateText) emailBody += `DUE DATE: ${dueDateText}\n`;
+            emailBody += `\n`;
+            
+            if (contactPerson || businessName || phone || email) {
+                emailBody += `CLIENT DETAILS:\n`;
+                emailBody += `---------------\n`;
+                if (contactPerson) emailBody += `Contact: ${contactPerson}\n`;
+                if (businessName) emailBody += `Company: ${businessName}\n`;
+                if (phone) emailBody += `Phone: ${phone}\n`;
+                if (email) emailBody += `Email: ${email}\n`;
+                if (businessAddress) emailBody += `Address: ${businessAddress}\n`;
+                emailBody += `\n`;
+            }
+            
+            if (siteAddress) {
+                emailBody += `SITE ADDRESS:\n`;
+                emailBody += `-------------\n`;
+                emailBody += `${siteAddress}\n\n`;
+            }
+            
+            if (scopeOfWork) {
+                emailBody += `SCOPE OF WORK:\n`;
+                emailBody += `--------------\n`;
+                emailBody += `${scopeOfWork}\n\n`;
+            }
+            
+            // Add items summary
+            const itemsTable = document.getElementById('itemsTable');
+            const itemRows = itemsTable.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+            let hasItems = false;
+            
+            for (let i = 0; i < itemRows.length; i++) {
+                const desc = itemRows[i].cells[0].querySelector('input').value;
+                if (desc.trim()) {
+                    if (!hasItems) {
+                        emailBody += `MATERIALS & ITEMS:\n`;
+                        emailBody += `------------------\n`;
+                        hasItems = true;
+                    }
+                    const qty = itemRows[i].cells[1].querySelector('input').value || '1';
+                    const price = itemRows[i].cells[2].querySelector('input').value || '0';
+                    emailBody += `• ${desc} (Qty: ${qty}, ${price})\n`;
                 }
-                shareText += `.\n\nRegards,\nCINC Whelan Electrical`;
-                
-                // Ask user first, then only print if they want to continue
-                const userChoice = confirm(`Generate PDF to share?\n\n✓ Print dialog will open\n✓ Save as PDF\n✓ Share menu will open automatically\n\nContinue?`);
-                
-                if (userChoice) {
-                    // Pre-process text areas for printing
-                    preprocessTextAreasForPrint();
-                    
-                    // Step 1: Print dialog
-                    window.print();
-                    
-                    // Step 2: Wait then open share
-                    setTimeout(async () => {
-                        try {
-                            await navigator.share({
-                                title: `Quote: ${jobName}`,
-                                text: shareText + `\n\nPDF file: ${fileName}.pdf`,
-                            });
-                        } catch (shareError) {
-                            console.log('Share cancelled');
-                        }
-                        cleanupAfterPrint();
-                    }, 3000);
+            }
+            if (hasItems) emailBody += `\n`;
+            
+            // Add labour summary
+            const labourTable = document.getElementById('labourTable');
+            const labourRows = labourTable.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+            let hasLabour = false;
+            
+            for (let i = 0; i < labourRows.length; i++) {
+                const desc = labourRows[i].cells[0].querySelector('input').value;
+                if (desc.trim()) {
+                    if (!hasLabour) {
+                        emailBody += `LABOUR:\n`;
+                        emailBody += `-------\n`;
+                        hasLabour = true;
+                    }
+                    const hours = labourRows[i].cells[1].querySelector('input').value || '0';
+                    const isOvertime = labourRows[i].cells[2].querySelector('input[type="checkbox"]').checked;
+                    const notes = labourRows[i].cells[3].querySelector('textarea').value;
+                    emailBody += `• ${desc} (${hours} hrs${isOvertime ? ' - Overtime' : ''})`;
+                    if (notes) emailBody += ` - ${notes}`;
+                    emailBody += `\n`;
                 }
-                
-            } catch (error) {
-                console.error('Share failed:', error);
-                downloadPDF();
+            }
+            if (hasLabour) emailBody += `\n`;
+            
+            if (pricesDiscussed) {
+                emailBody += `NOTES ON LABOUR & EQUIPMENT:\n`;
+                emailBody += `-----------------------------\n`;
+                emailBody += `${pricesDiscussed}\n\n`;
+            }
+            
+            // Add totals
+            emailBody += `ESTIMATE:\n`;
+            emailBody += `---------\n`;
+            if (totalHours !== '0.0') emailBody += `Total Hours: ${totalHours} hrs\n`;
+            emailBody += `Total Cost: ${totalIncGST} (inc. GST)\n\n`;
+            
+            if (additionalNotes) {
+                emailBody += `ADDITIONAL NOTES:\n`;
+                emailBody += `-----------------\n`;
+                emailBody += `${additionalNotes}\n\n`;
+            }
+            
+            emailBody += `Regards,\nCINC Whelan Electrical\n`;
+            
+            // Create email subject
+            let emailSubject = `Scope: ${jobName}`;
+            if (dueDateText) {
+                emailSubject += ` - Due ${dueDateText}`;
+            }
+            
+
+            console.log('Email Subject:', emailSubject);
+            alert('Subject will be: ' + emailSubject);
+
+            // Open email
+            const mailtoLink = `mailto:?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+            
+            if (navigator.share) {
+                // Try native share first (mobile)
+                navigator.share({
+                    title: emailSubject,
+                    text: emailBody
+                }).catch(() => {
+                    // Fallback to mailto
+                    window.open(mailtoLink) || (window.location.href = mailtoLink);
+                });
+            } else {
+                // Desktop: open email client
+                window.open(mailtoLink) || (window.location.href = mailtoLink);
             }
         }
     </script>
