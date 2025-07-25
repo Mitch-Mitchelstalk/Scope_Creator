@@ -1614,19 +1614,10 @@ function shareScope() {
             // Build mailto link with proper formatting
             const mailtoLink = `mailto:?subject=${encodedSubject}&body=${encodedBody}`;
             
-            if (navigator.share) {
-                // Try native share first (mobile)
-                navigator.share({
-                    title: emailSubject,
-                    text: emailBody
-                }).catch(() => {
-                    // Fallback to mailto
-                    window.open(mailtoLink) || (window.location.href = mailtoLink);
-                });
-            } else {
-                // Desktop: open email client
-                window.open(mailtoLink) || (window.location.href = mailtoLink);
-            }
+            // Go straight to email - no share dialog
+            window.open(mailtoLink) || (window.location.href = mailtoLink);
+                    
+            
         }
 
     </script>
