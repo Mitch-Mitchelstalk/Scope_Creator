@@ -1594,13 +1594,11 @@ function shareScope() {
                 emailSubject += ` - Due ${dueDateText}`;
             }
             
-
             // Properly encode the subject and body for mailto
-            // Use a more robust encoding approach for Mac compatibility
-            const encodedSubject = encodeURIComponent(emailSubject).replace(/%20/g, '+');
+            const encodedSubject = encodeURIComponent(emailSubject);
             const encodedBody = encodeURIComponent(emailBody);
             
-            // Open email
+            // Build mailto link with proper formatting
             const mailtoLink = `mailto:?subject=${encodedSubject}&body=${encodedBody}`;
             
             if (navigator.share) {
